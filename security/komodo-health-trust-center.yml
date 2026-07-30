@@ -1,0 +1,86 @@
+generated: '2026-07-19'
+method: searched
+probe: true
+source: https://trust.komodohealth.com/
+description: >-
+  Komodo Health's public trust center, verified 2026-07-19. Certifications below
+  are the badges actually rendered for Komodo plus claims asserted in the trust
+  center's own Q&A. An initial keyword probe of the page also matched ISO 27001,
+  ISO 27017, ISO 27018, HIPAA, FedRAMP and HITRUST — those strings appear only
+  inside the trust-center vendor's global badge catalog embedded in the page
+  payload, NOT as Komodo attestations, and have been removed.
+url: https://trust.komodohealth.com/
+verified: '2026-07-19'
+
+certifications:
+- name: SOC 2 Type II
+  badge: soc2-type-2
+  rendered: true
+- name: SOC 2 Type I
+  badge: soc2-type-1
+  rendered: true
+- name: GDPR
+  badge: gdpr
+  rendered: true
+- name: CCPA
+  badge: ccpa
+  rendered: true
+- name: CISA Secure by Design Pledge
+  badge: sbdp
+  rendered: true
+- name: EcoVadis
+  rendered: false
+  asserted_in: trust center Q&A
+  detail: >-
+    "Komodo Health submits to EcoVadis annually and has earned a Bronze Medal, a
+    recognition awarded to the Top 35% of companies assessed by EcoVadis in the
+    12 months prior to the medal issue date."
+  url: https://recognition.ecovadis.com/ipUyeLnBaUaKFrzwCsvhdw
+- name: CMS Qualified Entity (QE) Program
+  rendered: false
+  asserted_in: trust center Q&A
+  since: '2017'
+  detail: >-
+    "Komodo Health has been certified under the CMS Qualified Entity (QE)
+    Program since 2017. As a QE, Komodo Health is entrusted with claims data
+    under Medicare Parts A, B, and D for use in evaluating the performance of
+    healthcare providers in the U.S. health system."
+  reports: https://www.komodohealth.com/qe-reports/
+  provider_appeals: https://www.komodohealth.com/provider-correction-and-appeal-request/
+
+not_claimed:
+  note: >-
+    Checked and NOT asserted by Komodo as of 2026-07-19 — present in the page
+    only as vendor catalog boilerplate.
+  frameworks: [ISO 27001, ISO 27017, ISO 27018, HIPAA, HITRUST, FedRAMP, PCI DSS]
+
+security_practices:
+- One or more annual third-party audit(s)
+- Annual third-party penetration testing
+- Has a formal mobile device management (MDM) program
+- Has a disaster recovery plan
+- Has cyber insurance
+- Uses a centralized IAM solution (SSO) to manage employee access
+- Has a status page
+
+resources:
+  documents_available: 38
+  knowledge_base_faqs: 13
+  privacy_policy: https://www.komodohealth.com/privacy-notice/
+  subprocessors:
+    count: 26
+    url: https://www.komodohealth.com/sub-processor-notice/
+  status_page: https://statuspage.komodohealth.com/
+  help_center: https://komodohealthsupport.zendesk.com/hc/en-us
+
+vulnerability_disclosure:
+  published: false
+  note: >-
+    No security.txt, bug bounty program, or responsible-disclosure page was
+    found on any Komodo Health host (probed 2026-07-19). See
+    well-known/komodo-health-well-known.yml.
+
+evidence:
+- source: https://trust.komodohealth.com/
+  method: rendered protocol_badges extraction + Q&A answer text
+  badges_found: [soc2-type-2, gdpr, sbdp, soc2-type-1, ccpa]

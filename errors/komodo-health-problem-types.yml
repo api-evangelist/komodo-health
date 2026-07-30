@@ -1,0 +1,99 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.komodohealth.com/reference/sdk (exception reference) and
+  https://docs.komodohealth.com/guides-tutorials/guides/8-troubleshooting.
+  Komodo publishes no OpenAPI document, so no 4xx/5xx responses could be
+  derived; this catalog is taken from the published SDK exception tables and
+  the documented troubleshooting scenarios.
+description: >-
+  The error surface of the Marmot Development Kit. Komodo does not emit an
+  RFC 9457 problem+json envelope — errors reach callers as Python exceptions,
+  with Snowflake query failures surfaced in full (message, error code, SQL
+  state, query ID, trace ID) rather than being masked behind a generic message.
+format: language-exceptions
+rfc9457: false
+docs: https://docs.komodohealth.com/guides-tutorials/guides/8-troubleshooting
+
+envelope:
+  shape: >-
+    Komodo Error: <message> | Error code: <code> | SQL state: <sqlstate> |
+    Query ID: <sfqid> (Trace ID: <trace>)
+  fields:
+    message: Human-readable failure description, passed through from Snowflake.
+    error_code: Snowflake error code (e.g. 002003).
+    sql_state: SQLSTATE value (e.g. 02000).
+    query_id: Snowflake query ID, also available as cursor.sfqid.
+    trace_id: Komodo trace identifier for support escalation.
+  note: >-
+    Legitimate SQL errors that mention words like "key" or "token" are no longer
+    blanked out — a deliberate change to restore error visibility.
+
+exceptions:
+  - name: UnsetAccountError
+    module: komodo.snowflake
+    also_exported_from: komodo
+    meaning: Missing account context when opening a connection.
+    observed_message: >-
+      An account_id was not passed and could not be read from the SDK client session.
+    remediation: >-
+      Run `komodo account set` and pick an account, or pass account_id= into
+      get_snowflake_connection(...) along with JWT or M2M credentials.
+  - name: SnowflakeException
+    module: komodo.snowflake
+    meaning: Wrapped errors around query status and Map connection operations.
+    remediation: >-
+      Capture the query ID and call get_query_diagnostics(conn, query_id) or
+      `komodo sql-diagnostics <query-id>` for the recorded error code, execution
+      status, warehouse and timing.
+  - name: OpenApiException
+    module: komodo
+    meaning: Base class for errors raised by the generated REST clients bundled in the SDK.
+  - name: ApiException
+    module: komodo
+    parent: OpenApiException
+    meaning: A REST call to the Komodo control plane failed.
+  - name: ApiValueError
+    module: komodo
+    parent: OpenApiException
+    meaning: Invalid value supplied to a generated REST client.
+  - name: ValueError
+    module: builtins
+    meaning: Conflicting authentication inputs.
+    observed_scenario: Passing both jwt and client_id/client_secret, or combining profile with account_id.
+    remediation: Use exactly one authentication mode; profiles already carry the account_id.
+
+documented_failure_modes:
+  - id: not-authenticated
+    title: '"Not authenticated" / login loops'
+    remediation: Run `komodo login` and complete the browser OAuth flow; ensure the CLI and SDK resolve the same account.
+  - id: credentials-path-mismatch
+    title: Custom credentials file path
+    remediation: If KOMODO_CREDENTIALS_PATH is set, the CLI and SDK must agree on the same path.
+  - id: query-fails-database-role-syntax
+    title: Connection works but queries fail (database / role / syntax)
+    remediation: Issue USE DATABASE, USE SCHEMA and USE ROLE as required for the account before querying.
+  - id: secure-object-error
+    title: Error in secure object
+    error_code: '002003'
+    sql_state: '02000'
+    remediation: >-
+      Raised when expanding a view the caller does not own. Include the query ID
+      and trace ID when reporting the issue to Komodo.
+  - id: long-running-or-blocked-queries
+    title: Long-running or blocked queries
+    remediation: Use execute_query_async for submit-and-poll flows instead of blocking execution.
+  - id: pandas-non-sqlalchemy-warning
+    title: Pandas warns about non-SQLAlchemy connectables
+    remediation: Informational only — the connection is still valid.
+  - id: mcp-cannot-find-komodo
+    title: MCP cannot find komodo or fails to start
+    remediation: >-
+      The `cwd` in the MCP client config must be the project directory
+      containing the pyproject.toml where komodo is installed.
+  - id: schema-exploration-fails-cli-works
+    title: Schema exploration fails but the CLI works
+    remediation: Confirm the MCP server resolves the same account and credentials the CLI uses.
+  - id: python-version-error
+    title: Python version errors
+    remediation: 'The Marmot Development Kit requires Python >=3.11, <3.14.'

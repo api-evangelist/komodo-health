@@ -1,0 +1,46 @@
+generated: '2026-07-19'
+method: generated
+source: >-
+  Packaged from the published Marmot Development Kit documentation at
+  https://docs.komodohealth.com/. Every command, function and MCP tool name
+  referenced in these skills is quoted from Komodo's own reference pages —
+  nothing is invented. Komodo publishes no OpenAPI document and no AGENTS.md or
+  first-party agent skills, so these are API Evangelist packagings of the real
+  documented surface rather than verbatim provider artifacts.
+description: >-
+  Agent Skills for the Komodo Health platform. Komodo's developer surface is the
+  `komodo` PyPI package — the Marmot Development Kit — which brokers
+  authenticated access to a per-account Snowflake warehouse, ships a first-party
+  MCP server, and exposes the App Builder control plane. The three skills below
+  mirror the three marquee flows.
+provider_published_skills: none found
+provider_agents_md: none found
+
+skills:
+  - name: komodo-health-query-healthcare-map
+    file: komodo-health-query-healthcare-map.md
+    surface: cli+sdk
+    description: >-
+      Authenticate, select an account, run SQL against the Komodo-managed
+      Snowflake warehouse, and self-diagnose failed queries with
+      get_query_diagnostics / komodo sql-diagnostics.
+  - name: komodo-health-connect-mcp-server
+    file: komodo-health-connect-mcp-server.md
+    surface: mcp
+    description: >-
+      Configure and launch the first-party Komodo MCP server (stdio) in Cursor,
+      VS Code or Claude Desktop, and use list_snowflake for schema exploration.
+  - name: komodo-health-build-and-deploy-app
+    file: komodo-health-build-and-deploy-app.md
+    surface: mcp+cli
+    description: >-
+      Drive the 26 App Builder MCP tools through the recommended scaffold ->
+      validate -> register -> build -> status workflow, including secrets and
+      role sharing.
+
+grounding:
+  mcp: mcp/komodo-health-mcp.yml
+  cli: cli/komodo-health-cli.yml
+  authentication: authentication/komodo-health-authentication.yml
+  conventions: conventions/komodo-health-conventions.yml
+  errors: errors/komodo-health-problem-types.yml

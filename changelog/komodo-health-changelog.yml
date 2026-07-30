@@ -1,0 +1,59 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.komodohealth.com/reference/changelog (narrative notable-changes
+  page) and https://pypi.org/pypi/komodo/json (published version history with
+  upload timestamps).
+description: >-
+  Komodo Health versions its developer surface as the `komodo` PyPI package —
+  the Marmot Development Kit. The docs changelog page is a narrative "notable
+  changes" summary rather than a dated per-release log, and defers to PyPI
+  release metadata for the authoritative version list. Entries below record the
+  real published versions and their release dates, plus the notable changes
+  Komodo calls out; per-version change detail is not published publicly.
+docs: https://docs.komodohealth.com/reference/changelog
+registry: https://pypi.org/project/komodo/
+
+versioning:
+  scheme: semver
+  artifact: komodo (PyPI)
+  client_check: komodo --version
+  pinning: 'pip install komodo==<version>  /  uv add komodo==<version>'
+  dated_entries_published: false
+  keep_a_changelog: false
+  guidance: >-
+    "When upgrading, review PyPI release notes or your internal release
+    communications for breaking changes, new CLI commands, and MCP behavior."
+  current: 3.4.2
+  current_observed: '2026-07-19'
+
+notable_changes:
+  - title: Query error visibility and diagnostics
+    detail: >-
+      Failed queries now surface the full Snowflake error — message, error code,
+      SQL state, and query ID — instead of a generic message. Legitimate SQL
+      errors that mention words like "key" or "token" are no longer blanked out.
+  - title: Self-service query diagnostics
+    detail: >-
+      New get_query_diagnostics(connection, query_id) SDK helper and
+      `komodo sql-diagnostics <query-id>` CLI command return the error
+      code/message, execution status, warehouse and timing Snowflake recorded
+      for a query, so failures can be self-diagnosed without contacting Komodo
+      support.
+
+entries:
+  - {version: 3.4.2, date: '2026-07-16', latest: true}
+  - {version: 3.4.1, date: '2026-07-16'}
+  - {version: 3.3.3, date: '2026-06-02'}
+  - {version: 3.3.2, date: '2026-05-20'}
+  - {version: 3.3.1, date: '2026-04-21'}
+  - {version: 3.3.0, date: '2026-04-16'}
+  - {version: 3.2.0, date: '2026-03-30'}
+  - {version: 3.1.0, date: '2026-03-13'}
+  - {version: 3.0.5, date: '2026-01-06'}
+  - {version: 3.0.4, date: '2025-12-01'}
+
+entries_note: >-
+  Dates are PyPI upload timestamps observed 2026-07-19; 12 releases were
+  published in total. Komodo does not publish per-version release notes, so no
+  breaking/additions breakdown is asserted here.

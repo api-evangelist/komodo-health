@@ -1,0 +1,185 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.komodohealth.com/ (authentication and MCP guides),
+  https://trust.komodohealth.com/, and live probes on 2026-07-19.
+description: >-
+  Which industry and cross-cutting standards the Komodo Health platform
+  demonstrably conforms to, with the evidence for each. Komodo's developer
+  surface is an SDK/CLI over a per-account Snowflake warehouse rather than a
+  public REST API, so several web-API standards are simply not applicable. Every
+  `conforms: false` below is an observed absence, not a judgement.
+
+standards:
+  - id: oauth2
+    name: OAuth 2.0
+    conforms: true
+    evidence: >-
+      Both authentication modes are OAuth 2.0 — browser-based login and
+      client_credentials service principals. Documented at
+      https://docs.komodohealth.com/guides-tutorials/guides/2-authentication
+  - id: rfc8628
+    name: OAuth 2.0 Device Authorization Grant
+    conforms: true
+    evidence: >-
+      "komodo login — Start the OAuth 2.0 Device Authorization Flow."
+      https://docs.komodohealth.com/reference/cli
+  - id: jwt
+    name: JSON Web Token (RFC 7519)
+    conforms: true
+    evidence: >-
+      Web login "Provides JWT tokens for API access"; `komodo jwt` prints the
+      current JWT and credentials store token/token_expiration.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    evidence: >-
+      First-party Komodo MCP server over stdio with a published tool surface
+      (Snowflake exploration + 26 App Builder tools).
+      https://docs.komodohealth.com/guides-tutorials/guides/6-mcp-server
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: >-
+      No /.well-known/openid-configuration on any host (404/403 on 2026-07-19)
+      and no OIDC discovery documented.
+  - id: openapi
+    name: OpenAPI
+    conforms: partial
+    evidence: >-
+      The SDK bundles generated OpenAPI clients (exceptions subclass
+      OpenApiException), so OpenAPI is used internally, but no OpenAPI document
+      is published — https://api.komodohealth.com/openapi.json returns 401.
+  - id: fhir
+    name: HL7 FHIR
+    conforms: false
+    evidence: >-
+      No FHIR resource, endpoint or profile is documented. Komodo's clinical
+      data is exposed as de-identified claims/EHR tables in Snowflake, and
+      cohort building uses ICD-10, CPT/HCPCS and NDC code systems rather than
+      FHIR resources.
+  - id: icd10
+    name: ICD-10 diagnosis coding
+    conforms: true
+    evidence: >-
+      "Diagnosis Code (ICD-10 format, e.g. C34%, C50.1)" — beta
+      cohort-exploration, https://docs.komodohealth.com/reference/cli
+  - id: cpt-hcpcs
+    name: CPT / HCPCS procedure coding
+    conforms: true
+    evidence: >-
+      "Procedure Code (CPT/HCPCS format, e.g. 96413, J9271)" — beta
+      cohort-exploration.
+  - id: ndc
+    name: National Drug Code
+    conforms: true
+    evidence: >-
+      "Drug Reference (NDC Code, e.g. 12345-6789-01)" — beta cohort-exploration.
+  - id: soc2
+    name: SOC 2 (Type I and Type II)
+    conforms: true
+    evidence: >-
+      SOC 2 Type II and SOC 2 Type I attested on the Komodo trust center,
+      https://trust.komodohealth.com/
+  - id: gdpr
+    name: GDPR
+    conforms: true
+    evidence: Listed on https://trust.komodohealth.com/
+  - id: ccpa
+    name: CCPA
+    conforms: true
+    evidence: Listed on https://trust.komodohealth.com/
+  - id: cisa-secure-by-design
+    name: CISA Secure by Design Pledge
+    conforms: true
+    evidence: Listed on https://trust.komodohealth.com/
+  - id: ecovadis
+    name: EcoVadis
+    conforms: true
+    evidence: >-
+      "Komodo Health submits to EcoVadis annually and has earned a Bronze Medal,
+      a recognition awarded to the Top 35% of companies assessed by EcoVadis" —
+      https://recognition.ecovadis.com/ipUyeLnBaUaKFrzwCsvhdw
+  - id: cms-qualified-entity
+    name: CMS Qualified Entity (QE) Program
+    conforms: true
+    evidence: >-
+      "Komodo Health has been certified under the CMS Qualified Entity (QE)
+      Program since 2017... entrusted with claims data under Medicare Parts A, B,
+      and D for use in evaluating the performance of healthcare providers."
+      Reports at https://www.komodohealth.com/qe-reports/ and a required provider
+      correction/appeal process at
+      https://www.komodohealth.com/provider-correction-and-appeal-request/
+  - id: iso27001
+    name: ISO/IEC 27001
+    conforms: false
+    evidence: >-
+      Not attested by Komodo. The string appears in the trust-center vendor's
+      embedded global badge catalog but is not among the badges rendered for
+      Komodo. See security/komodo-health-trust-center.yml (not_claimed).
+  - id: hitrust
+    name: HITRUST CSF
+    conforms: false
+    evidence: Not attested — vendor catalog boilerplate only (verified 2026-07-19).
+  - id: fedramp
+    name: FedRAMP
+    conforms: false
+    evidence: Not attested — vendor catalog boilerplate only (verified 2026-07-19).
+  - id: hipaa
+    name: HIPAA
+    conforms: false
+    evidence: >-
+      Not attested on the trust center as of 2026-07-19 — the string appears
+      only in vendor catalog boilerplate. Komodo's data foundation is described
+      as de-identified rather than as protected health information.
+  - id: pci-dss
+    name: PCI DSS
+    conforms: false
+    evidence: Not named on the trust center; Komodo is not a payments provider.
+  - id: rfc9457
+    name: 'RFC 9457 Problem Details for HTTP APIs'
+    conforms: false
+    evidence: >-
+      Errors surface as language-level exceptions with a Komodo/Snowflake error
+      string, not application/problem+json. See
+      errors/komodo-health-problem-types.yml
+  - id: rfc8594
+    name: 'RFC 8594 Sunset header'
+    conforms: false
+    evidence: No deprecation or sunset policy is published.
+  - id: rfc9116
+    name: 'RFC 9116 security.txt'
+    conforms: false
+    evidence: No /.well-known/security.txt on any host (probed 2026-07-19).
+  - id: jsonapi
+    name: 'JSON:API'
+    conforms: false
+    evidence: Not applicable — no public REST surface.
+  - id: odata
+    name: OData
+    conforms: false
+    evidence: Not documented.
+  - id: scim
+    name: SCIM
+    conforms: false
+    evidence: >-
+      Not documented. The trust center records a centralized IAM/SSO solution
+      for employee access, but no customer-facing SCIM provisioning API.
+  - id: fapi
+    name: FAPI
+    conforms: false
+    evidence: Not applicable — not a financial-grade API provider.
+  - id: psd2
+    name: PSD2
+    conforms: false
+    evidence: Not applicable.
+  - id: idempotency
+    name: Idempotency keys
+    conforms: false
+    evidence: No idempotency-key mechanism is documented.
+  - id: pagination
+    name: HTTP pagination envelope
+    conforms: false
+    evidence: >-
+      Results are consumed via DB-API cursor fetch semantics, not an HTTP
+      pagination envelope.

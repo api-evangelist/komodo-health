@@ -1,0 +1,125 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.komodohealth.com/ — the cross-cutting runtime semantics of the
+  Marmot Development Kit, assembled from the authentication, executing-queries,
+  async-queries, MCP server, troubleshooting and reference pages. Komodo does
+  not publish an OpenAPI document, so nothing here is derived from a spec.
+description: >-
+  How the Komodo Health platform behaves across every call. Komodo's developer
+  surface is unusual: rather than a public REST API, the primary interface is a
+  Python SDK and CLI that broker an authenticated connection to a per-account,
+  Komodo-managed Snowflake warehouse, plus an App Builder control plane and an
+  MCP server over the same session. These are the conventions that apply
+  regardless of which of those surfaces you use.
+
+api_style: >-
+  Python SDK + CLI over a per-account Snowflake warehouse (DB-API cursors), with
+  an internal REST control plane (accounts, service principals, secrets, builds,
+  apps, Cohort API) reached through generated OpenAPI clients bundled in the SDK.
+  No public REST API reference or OpenAPI document is published.
+
+authentication:
+  style: >-
+    OAuth 2.0 — Device Authorization Flow for interactive users (JWT), or
+    client_credentials service principals for M2M. Mutually exclusive.
+  entrypoint: get_snowflake_connection(...)
+  detail: authentication/komodo-health-authentication.yml
+
+tenancy:
+  unit: account
+  required: true
+  description: >-
+    Every query and API operation is scoped to a Komodo account, which owns its
+    own data subscriptions and a dedicated Snowflake warehouse. Accounts are
+    isolated — data does not move between them. Omitting account context raises
+    UnsetAccountError.
+  selection: komodo account set, or account_id= / profile= on the SDK call
+
+environments:
+  default: production
+  values: [production, integration, development]
+  selector: -E / --environment
+  note: integration and development require the private komodo-internal-tools plugin. All MCP tools operate against production.
+
+configuration:
+  credentials_file: ~/.komodo/credentials
+  credentials_file_override: KOMODO_CREDENTIALS_PATH
+  profiles: INI-style named profiles ([default] for web login, named profiles for M2M)
+  buildkit_host: BUILDKIT_HOST — required on the MCP server process (not just the shell) for local build_mode
+
+idempotency:
+  supported: unknown
+  documented: false
+  note: >-
+    Komodo publishes no idempotency-key mechanism. Read paths are SQL SELECTs
+    against Snowflake and are naturally repeatable; write paths on the App
+    Builder control plane are not documented as idempotent. Recorded as absent
+    rather than assumed.
+
+pagination:
+  style: cursor-free / result-set fetch
+  description: >-
+    Results are consumed through DB-API cursor semantics rather than an HTTP
+    pagination envelope — fetchall() for all rows, fetchone() for a single row,
+    fetchmany(n) for batches. Row volume is bounded with SQL LIMIT.
+  docs: https://docs.komodohealth.com/guides-tutorials/guides/3-executing-queries
+
+async_execution:
+  supported: true
+  mechanism: execute_query_async — submit-and-poll
+  status_check: is_still_running
+  docs: https://docs.komodohealth.com/guides-tutorials/guides/5-async-queries
+
+request_tracing:
+  identifiers:
+    query_id: >-
+      Snowflake query ID, exposed as cursor.sfqid and echoed into surfaced error
+      messages as "Query ID: ...". The primary correlation handle.
+    trace_id: Included alongside the query ID in surfaced error messages.
+  query_tags: >-
+    Query-tag metadata can be attached to a connection to label workloads.
+  diagnostics: >-
+    get_query_diagnostics(connection, query_id) in the SDK and
+    `komodo sql-diagnostics <query-id>` in the CLI return the recorded error
+    code/message, execution status, warehouse and timing, backed by Snowflake's
+    INFORMATION_SCHEMA.QUERY_HISTORY. The query must fall inside the history
+    retention window and a database must be set on the connection.
+
+error_envelope:
+  style: language-level exceptions (no HTTP problem envelope published)
+  surfaced_fields: [message, error code, SQL state, query ID, trace ID]
+  example: >-
+    Komodo Error: Failure during expansion of view 'MEDICAL_SERVICE_LINES_LATEST':
+    Error in secure object. | Error code: 002003 | SQL state: 02000 |
+    Query ID: 01b... (Trace ID: ...)
+  detail: errors/komodo-health-problem-types.yml
+
+versioning:
+  scheme: semantic versioning of the `komodo` PyPI package
+  client_check: komodo --version
+  pinning: pip install komodo==<version> / uv add komodo==<version>
+  stability_tiers: [stable, beta, alpha]
+  detail: lifecycle/komodo-health-lifecycle.yml
+
+rate_limits:
+  published: false
+  note: >-
+    No rate-limit headers or quota policy are published. Concurrency and cost
+    are governed by the account's dedicated Snowflake warehouse sizing rather
+    than an API quota.
+
+secrets:
+  api: SecretsAPI (SDK) / komodo secrets (CLI) / 6 MCP tools
+  scoped: true
+  note: >-
+    Secrets are scoped, including app-scoped secrets; RBAC/FGA requires the app
+    Custom Resource to exist (register_app) before secret operations behave
+    reliably.
+
+cross_references:
+  authentication: authentication/komodo-health-authentication.yml
+  errors: errors/komodo-health-problem-types.yml
+  lifecycle: lifecycle/komodo-health-lifecycle.yml
+  cli: cli/komodo-health-cli.yml
+  mcp: mcp/komodo-health-mcp.yml

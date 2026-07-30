@@ -1,0 +1,61 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://pypi.org/project/komodo/ and https://docs.komodohealth.com/installation
+  — the Marmot Development Kit is distributed as a single first-party PyPI
+  package that ships both the Python SDK and the `komodo` CLI (and the MCP
+  server). No first-party client libraries were found on npm, Maven Central,
+  NuGet, pkg.go.dev, RubyGems, Packagist or crates.io.
+description: >-
+  First-party client packages published by Komodo Health. Komodo ships a single
+  Python distribution — `komodo`, the Marmot Development Kit — which bundles the
+  SDK (Snowflake connections, async queries, secrets), the `komodo` CLI, and the
+  Komodo MCP server. Additional CLI/MCP surface is delivered through the private
+  `komodo-internal-tools` plugin package, which is not publicly distributed.
+docs: https://docs.komodohealth.com/installation
+
+packages:
+  - name: komodo
+    official: true
+    registry: pypi
+    url: https://pypi.org/project/komodo/
+    language: python
+    version: 3.4.2
+    version_observed: '2026-07-19'
+    first_release_observed: '2025-12-01'
+    latest_release_observed: '2026-07-16'
+    releases_published: 12
+    requires_python: '>=3.11, <3.14'
+    summary: >-
+      Marmot Development Kit — Python SDK and CLI for the Komodo Health platform
+      (Snowflake access, OAuth, MCP, and more).
+    provides:
+      - Python SDK (get_snowflake_connection, execute_query_async, get_query_diagnostics, SecretsAPI)
+      - komodo CLI (see cli/komodo-health-cli.yml)
+      - Komodo MCP server (see mcp/komodo-health-mcp.yml)
+    install:
+      uv: uv add komodo
+      pip: pip install komodo
+      pin: pip install komodo==<version>
+    detail: cli/komodo-health-cli.yml
+
+plugins:
+  - name: komodo-internal-tools
+    official: true
+    public: false
+    registry: private
+    note: >-
+      Installed via `komodo plugin install` from Komodo's internal package
+      registry. Registers additional CLI commands and MCP tools and unlocks the
+      `integration` and `development` environments. Not published to PyPI.
+    source: https://docs.komodohealth.com/reference/cli
+
+registries_checked:
+  - {registry: pypi, result: found, package: komodo}
+  - {registry: npm, result: none}
+  - {registry: maven-central, result: none}
+  - {registry: nuget, result: none}
+  - {registry: pkg.go.dev, result: none}
+  - {registry: rubygems, result: none}
+  - {registry: packagist, result: none}
+  - {registry: crates.io, result: none}

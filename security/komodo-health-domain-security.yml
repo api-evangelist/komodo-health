@@ -1,0 +1,33 @@
+generated: '2026-07-19'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.komodohealth.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 13 06:15:00 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: docs.komodohealth.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 21 23:59:59 2026 GMT
+  hsts: false
+- host: api.komodohealth.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Mar 13 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: komodohealth.com
+  dnssec: true
+  caa:
+  - 0 issuewild "ssl.com"
+  - 0 issue "amazonaws.com"
+  - 0 issue "digicert.com"
+  - 0 issue "letsencrypt.org"
+  - 0 issue "pki.goog; cansignhttpexchanges=yes"
+  - 0 issue "sectigo.com"
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine

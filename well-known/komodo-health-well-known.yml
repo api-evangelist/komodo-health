@@ -1,0 +1,42 @@
+generated: '2026-07-19'
+method: probed
+source: live HTTP probe of Komodo Health hosts on 2026-07-19
+description: >-
+  Probe of the standard /.well-known/ discovery surface across every Komodo
+  Health host in this profile. No well-known document is published on any host —
+  an honest negative result. Note that Komodo does publish an llms.txt at the
+  site root (captured verbatim in llms/komodo-health-llms.txt), and that
+  https://api.komodohealth.com/openapi.json answers 401 rather than 404,
+  indicating a real but authentication-gated API surface with no public spec.
+probed: '2026-07-19'
+found: 0
+
+hosts:
+  - host: www.komodohealth.com
+    paths:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /llms.txt, status: 200, file: ../llms/komodo-health-llms.txt}
+  - host: docs.komodohealth.com
+    note: All /.well-known/ paths answer 403 (edge deny), not 404 — nothing is served.
+    paths:
+      - {path: /.well-known/security.txt, status: 403, file: null}
+      - {path: /security.txt, status: 403, file: null}
+      - {path: /.well-known/openid-configuration, status: 403, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 403, file: null}
+      - {path: /.well-known/api-catalog, status: 403, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 403, file: null}
+  - host: api.komodohealth.com
+    note: Host resolves and answers; /openapi.json returns 401 (auth-gated, no public spec).
+    paths:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /openapi.json, status: 401, file: null}

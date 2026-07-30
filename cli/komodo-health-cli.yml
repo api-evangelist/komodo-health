@@ -1,0 +1,106 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.komodohealth.com/reference/cli and
+  https://docs.komodohealth.com/reference/app-builder-cli
+description: >-
+  The `komodo` CLI — the command-line half of the Marmot Development Kit. It
+  handles OAuth login, account selection, service-principal (M2M) credentials,
+  MCP server configuration and launch, direct SQL execution against the
+  customer's Komodo-managed Snowflake warehouse, plugin management, and the full
+  App Builder surface (apps, builds, infra, secrets). The binary ships in the
+  `komodo` PyPI package catalogued in packages/komodo-health-packages.yml.
+docs: https://docs.komodohealth.com/reference/cli
+binary: komodo
+invocation: uv run komodo <command>
+install:
+  uv: uv add komodo
+  pip: pip install komodo
+requires_python: '>=3.11, <3.14'
+
+global_options:
+  - {flag: --version, alias: -v, description: Show the CLI version and exit.}
+  - {flag: --help, description: Show help text and exit.}
+  - {flag: --environment, alias: -E, description: 'Target environment: production (default). integration and development require the komodo-internal-tools plugin.'}
+
+commands:
+  authentication:
+    - {name: login, description: 'Start the OAuth 2.0 Device Authorization Flow. Opens the browser and stores the JWT and refresh token in ~/.komodo/credentials.'}
+    - {name: jwt, description: Print the current JWT token for debugging or use with external tools.}
+  account_management:
+    - {name: account set, description: Interactively select the active Komodo account from your available accounts.}
+    - {name: account get, description: Print the currently selected account ID and slug.}
+    - {name: account list, description: List all accounts you have access to.}
+  service_principals:
+    - {name: service-principal create, description: 'Create a new service principal. Returns the client_id and client_secret.', flags: ['--name (required)', '--description']}
+    - {name: service-principal list, description: List all service principals for the current account.}
+    - {name: service-principal delete, description: Delete a service principal by ID.}
+  mcp_server:
+    - {name: mcp show-config, description: 'Generate the MCP server configuration JSON for your AI client; output is copied to the clipboard.', flags: ['--name/-n custom server name (default komodo)']}
+    - {name: mcp run, description: Start the MCP server with STDIO transport. Normally started automatically by the AI client.}
+  sql_queries:
+    - {name: sql-execute, description: Execute a single SQL statement against your Snowflake warehouse and display results in a formatted table.}
+    - {name: sql-shell, description: 'Start an interactive SQL shell for running multiple queries in a session. Type exit to quit; errors in one statement do not exit the shell.'}
+    - {name: sql-diagnostics, description: 'Show diagnostic detail for a previously executed query — error code and message, execution status, warehouse and timing recorded by Snowflake. Takes the Snowflake query ID (sfqid).'}
+  plugin_management:
+    - {name: plugin install, description: 'Install a Komodo CLI plugin package. With no arguments installs komodo-internal-tools from Komodo''s internal registry.', flags: ['--package', '--path']}
+    - {name: plugin uninstall, description: Uninstall a plugin package.}
+    - {name: plugin list, description: List installed plugins and their registered CLI commands and MCP tools.}
+  utility:
+    - {name: docs, description: Open the Marmot Development Kit documentation in your browser.}
+    - {name: feedback, description: Submit feedback about the Marmot Development Kit.}
+  app_builder_apps:
+    - {name: app list, description: List Komodo Apps.}
+    - {name: app get, description: Get a Komodo App.}
+    - {name: app get-status, description: Get the deployment status of an app.}
+    - {name: app update, description: Update an app.}
+    - {name: app delete, description: Delete an app.}
+    - {name: app list-logs, description: List available log streams for an app.}
+    - {name: app list-latest-logs, description: List the latest log streams for an app.}
+    - {name: app get-log, description: Retrieve a specific log.}
+    - {name: app display-log, description: Display a specific log.}
+    - {name: app display-latest-logs, description: Display the latest logs for an app.}
+  app_builder_sharing:
+    - {name: app sharing list, description: List app permissions.}
+    - {name: app sharing roles, description: List grantable roles.}
+    - {name: app sharing grant, description: Grant a role on an app.}
+    - {name: app sharing revoke, description: Revoke a role on an app.}
+  app_builder_builds:
+    - {name: build status, description: Get the status of a build.}
+    - {name: build cancel, description: Cancel a running build.}
+    - {name: build list, description: List builds.}
+    - {name: build check, description: Check a build.}
+  app_builder_infra:
+    - {name: infra mesh, description: Service mesh operations.}
+    - {name: infra mesh-status, description: Service mesh status.}
+    - {name: infra get-assigned-domains, description: Get domains assigned to the account.}
+    - {name: infra get-aws-account-info, description: Get AWS account information.}
+  secrets:
+    - {name: secrets create, description: Create a secret.}
+    - {name: secrets get, description: Read a secret.}
+    - {name: secrets list, description: List secrets.}
+    - {name: secrets update, description: Update a secret.}
+    - {name: secrets delete, description: Delete a secret.}
+    - {name: secrets move, description: Move a secret between scopes.}
+  beta:
+    stability: >-
+      Beta commands are preview features — more stable than alpha but still
+      subject to change. APIs may change in breaking ways between releases and
+      access is limited to select users during the beta period.
+    group: komodo beta
+    commands:
+      - name: beta cohort-exploration
+        description: >-
+          Explore patient cohorts interactively using the Cohort API — guided
+          simple mode (ICD-10 diagnosis codes, CPT/HCPCS procedure codes, NDC
+          drug references), advanced AND/OR/nested condition logic, quick
+          approximate or exact distinct patient counts, and demographic
+          summaries by time trend, gender, age, state, race/ethnicity and
+          mortality.
+
+key_flows:
+  first_run: [login, account set, sql-execute]
+  mcp_setup: [login, account set, mcp show-config]
+  m2m_setup: [login, service-principal create]
+  app_deploy: [app list, build status, app get-status, app display-latest-logs]
+  failure_triage: [sql-diagnostics]

@@ -1,0 +1,82 @@
+generated: '2026-07-19'
+method: searched
+source: >-
+  https://docs.komodohealth.com/reference/changelog,
+  https://docs.komodohealth.com/reference/cli,
+  https://status.komodohealth.com/ and https://trust.komodohealth.com/
+description: >-
+  Versioning, stability tiers, support and availability posture for the Komodo
+  Health platform. Komodo versions its developer surface through the `komodo`
+  PyPI package rather than dated API versions, and stages new capability through
+  explicit alpha and beta command tiers. No formal deprecation policy or
+  RFC 8594 Sunset/Deprecation header behavior is published.
+
+versioning:
+  scheme: semver
+  vehicle: komodo PyPI package (Marmot Development Kit)
+  current: 3.4.2
+  header_based_pinning: false
+  client_pinning: 'pip install komodo==<version> / uv add komodo==<version>'
+  detail: changelog/komodo-health-changelog.yml
+
+stability_tiers:
+  - name: stable
+    description: Generally available commands and SDK surface.
+  - name: beta
+    group: komodo beta
+    description: >-
+      "Beta commands are preview features that are more stable than alpha but
+      still subject to change. APIs may change in breaking ways between releases
+      and access is limited to select users during the beta period."
+    members: [beta cohort-exploration]
+  - name: alpha
+    description: Referenced as the tier below beta; no public alpha command list is published.
+
+deprecation:
+  policy_published: false
+  sunset_header: not published
+  deprecation_header: not published
+  note: >-
+    Komodo publishes no deprecation or sunset policy. Breaking changes are
+    communicated through PyPI release notes and "internal release
+    communications" per the changelog page, and the beta tier explicitly warns
+    that breaking changes may land between releases.
+
+status_page:
+  url: https://statuspage.komodohealth.com/
+  status_observed: 200
+  observed: '2026-07-19'
+  alternate_host: https://status.komodohealth.com/
+  access: >-
+    Login-gated. The status.komodohealth.com host answers 200 with a
+    "Komodo Health Status" login interface; components are not publicly listed.
+  corroboration: >-
+    The Komodo trust center asserts "Has a status page" and directs customers to
+    https://statuspage.komodohealth.com — quoted verbatim: "System status is
+    available on our Status Page."
+
+support:
+  help_center: https://komodohealthsupport.zendesk.com/hc/en-us
+  help_center_alias: https://www.komodohealth.com/support
+  access: >-
+    Authenticated — "Active customers with a valid product login can access the
+    Help Center." Returns HTTP 403 to anonymous clients.
+  case_submission: >-
+    Use the "Submit a Request" link on the Help Center homepage; this creates a
+    case routed to Komodo's customer support engineers.
+  in_product: komodo feedback
+  self_service_diagnostics: komodo sql-diagnostics <query-id>
+
+sla:
+  published: false
+  note: >-
+    No public SLA. The trust center records a disaster recovery plan, annual
+    third-party audits and annual third-party penetration testing.
+
+environments:
+  - {name: production, public: true, default: true}
+  - {name: integration, public: false}
+  - {name: development, public: false}
+
+runtime_requirements:
+  python: '>=3.11, <3.14'
