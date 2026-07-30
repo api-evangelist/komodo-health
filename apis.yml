@@ -1,27 +1,167 @@
 aid: komodo-health
 name: Komodo Health
-description: Komodo Health is a company surfaced as a portfolio company of a16z, iconiq-capital and added
-  to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment
-  pipeline.
+description: >-
+  Komodo Health is a healthcare technology company that combines a de-identified
+  real-world data foundation — the Healthcare Map, over one trillion linked
+  records covering 330M+ patients and refreshed daily — with a validated
+  healthcare AI layer called Marmot, serving life sciences, payers, providers,
+  financial services and consultancies. Its developer surface is the Marmot
+  Development Kit: a first-party Python SDK and `komodo` CLI distributed on PyPI
+  that authenticate with OAuth 2.0 (device flow for users, service-principal
+  client credentials for machines) and broker access to a dedicated,
+  per-account Komodo-managed Snowflake warehouse. The same package ships a
+  first-party Model Context Protocol server that lets AI assistants explore
+  warehouse schemas and drive the Komodo App Builder, plus a beta Cohort API for
+  interactive patient-cohort exploration over ICD-10, CPT/HCPCS and NDC codes.
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://www.komodohealth.com/wp-content/uploads/2026/04/Default-New.png
 url: https://raw.githubusercontent.com/api-evangelist/komodo-health/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - a16z
 - iconiq-capital
-x-tier: stub
+x-tier: enriched
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-apis: []
+- Healthcare
+- Health Data
+- Life Sciences
+- Real-World Data
+- Healthcare Analytics
+- Artificial Intelligence
+- Data
+- Snowflake
+- MCP
+apis:
+- name: Komodo Health Marmot Development Kit
+  description: >-
+    The Marmot Development Kit is Komodo Health's developer surface — a Python
+    SDK and `komodo` CLI published to PyPI that handle OAuth 2.0 authentication,
+    account selection, service-principal credentials, secrets, SQL execution
+    against the account's dedicated Komodo-managed Snowflake warehouse, the
+    Komodo App Builder control plane, and a first-party MCP server. Komodo does
+    not publish a public OpenAPI document; the REST control plane behind the SDK
+    is authentication-gated.
+  humanURL: https://docs.komodohealth.com/
+  baseURL: https://api.komodohealth.com
+  image: https://www.komodohealth.com/wp-content/uploads/2026/04/Default-New.png
+  tags:
+  - Healthcare
+  - Health Data
+  - Real-World Data
+  - Snowflake
+  - MCP
+  - SDK
+  - CLI
+  properties:
+  - type: Documentation
+    url: https://docs.komodohealth.com/
+  - type: GettingStarted
+    url: https://docs.komodohealth.com/guides-tutorials/guides/1-quickstart/
+  - type: APIReference
+    url: https://docs.komodohealth.com/reference/sdk/
+  - type: Authentication
+    url: authentication/komodo-health-authentication.yml
+  - type: Packages
+    url: packages/komodo-health-packages.yml
+  - type: SDKs
+    url: packages/komodo-health-packages.yml
+  - type: CLI
+    url: cli/komodo-health-cli.yml
+  - type: MCPServer
+    url: mcp/komodo-health-mcp.yml
+  - type: Conventions
+    url: conventions/komodo-health-conventions.yml
+  - type: ErrorCatalog
+    url: errors/komodo-health-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/komodo-health-lifecycle.yml
+  - type: ChangeLog
+    url: changelog/komodo-health-changelog.yml
+  - type: Conformance
+    url: conformance/komodo-health-conformance.yml
+  - type: AgentSkill
+    url: skills/_index.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: TrustCenter
+  url: security/komodo-health-trust-center.yml
+- type: DomainSecurity
+  url: security/komodo-health-domain-security.yml
 - type: Website
   url: https://www.komodohealth.com/
+- type: DeveloperPortal
+  url: https://docs.komodohealth.com/
+- type: Documentation
+  url: https://docs.komodohealth.com/
+- type: APIReference
+  url: https://docs.komodohealth.com/reference/sdk/
+- type: GettingStarted
+  url: https://docs.komodohealth.com/guides-tutorials/guides/1-quickstart/
+- type: Blog
+  url: https://www.komodohealth.com/perspectives/
+- type: Support
+  url: https://komodohealthsupport.zendesk.com/hc/en-us
+- type: GitHubOrganization
+  url: https://github.com/komodohealth
+- type: SignUp
+  url: https://www.komodohealth.com/get-demo/
+- type: TermsOfService
+  url: https://www.komodohealth.com/terms-of-service/
+- type: PrivacyPolicy
+  url: https://www.komodohealth.com/privacy-notice/
+- type: StatusPage
+  url: https://statuspage.komodohealth.com/
+- type: ChangeLog
+  url: https://docs.komodohealth.com/reference/changelog/
+- type: Compliance
+  url: https://trust.komodohealth.com/
+- type: Packages
+  url: packages/komodo-health-packages.yml
+- type: SDKs
+  url: packages/komodo-health-packages.yml
+- type: CLI
+  url: cli/komodo-health-cli.yml
+- type: MCPServer
+  url: mcp/komodo-health-mcp.yml
+- type: LLMsTxt
+  url: llms/komodo-health-llms.txt
+- type: WellKnown
+  url: well-known/komodo-health-well-known.yml
+- type: Authentication
+  url: authentication/komodo-health-authentication.yml
+- type: Conventions
+  url: conventions/komodo-health-conventions.yml
+- type: ErrorCatalog
+  url: errors/komodo-health-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/komodo-health-lifecycle.yml
+- type: Conformance
+  url: conformance/komodo-health-conformance.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
