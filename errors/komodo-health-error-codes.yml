@@ -1,0 +1,90 @@
+generated: '2026-07-19'
+method: searched
+source: https://docs.komodohealth.com/guides-tutorials/guides/8-troubleshooting/
+docs:
+- https://docs.komodohealth.com/guides-tutorials/guides/8-troubleshooting/
+- https://docs.komodohealth.com/reference/sdk/
+format: sdk-exceptions
+format_note: >-
+  Komodo publishes no RFC 9457 problem+json catalog and no public OpenAPI, so
+  this is the documented exception/diagnostic surface of the Marmot Development
+  Kit rather than a derived HTTP problem-type list. The underlying data errors
+  are Snowflake error codes surfaced verbatim through the SDK.
+envelope:
+  snowflake:
+    example: >-
+      Komodo Error: Failure during expansion of view 'MEDICAL_SERVICE_LINES_LATEST':
+      Error in secure object. | Error code: 002003 | SQL state: 02000 |
+      Query ID: 01b... (Trace ID: ...)
+    fields:
+    - {field: message, description: Full Snowflake error message}
+    - {field: error_code, description: Snowflake error code (e.g. 002003)}
+    - {field: sql_state, description: SQLSTATE (e.g. 02000)}
+    - {field: query_id, description: Snowflake query ID (cursor.sfqid)}
+    - {field: trace_id, description: Komodo trace identifier}
+  http:
+    description: >-
+      Generated OpenAPI clients raise subclasses of OpenApiException; inspect the
+      exception message and HTTP status.
+exceptions:
+- name: UnsetAccountError
+  module: komodo.snowflake
+  also_exported_from: komodo
+  meaning: >-
+    An account_id was not passed and could not be read from the SDK client
+    session.
+  raised_by: [get_snowflake_connection]
+  remediation: >-
+    Run `uv run komodo account set` and pick an account, or pass
+    account_id= into get_snowflake_connection(...).
+- name: ValueError
+  module: builtins
+  meaning: >-
+    Invalid combination of arguments — e.g. passing both jwt and
+    client_id/client_secret, combining a profile with explicit credentials, or a
+    non-JSON-serializable query_tag_extra.
+  raised_by: [get_snowflake_connection]
+  remediation: Use exactly one authentication method per call.
+- name: SnowflakeException
+  module: komodo.snowflake
+  meaning: Wrapped errors around query status or Map connection operations.
+  raised_by: [is_still_running]
+- name: ApiException
+  module: komodo
+  base: OpenApiException
+  meaning: HTTP error from a generated platform API client (Client / iam).
+  remediation: Inspect the raised ApiException message and HTTP status.
+- name: ApiValueError
+  module: komodo
+  base: OpenApiException
+  meaning: Invalid value passed to a generated platform API client.
+- name: OpenApiException
+  module: komodo
+  meaning: Base class for generated REST client exceptions.
+diagnostics:
+  sdk: get_query_diagnostics(connection, query_id)
+  cli: uv run komodo sql-diagnostics <query-id>
+  returns: [QUERY_ID, QUERY_TEXT, EXECUTION_STATUS, ERROR_CODE, ERROR_MESSAGE,
+    WAREHOUSE_NAME, START_TIME, END_TIME, TOTAL_ELAPSED_TIME]
+  backed_by: Snowflake INFORMATION_SCHEMA.QUERY_HISTORY
+  constraints:
+  - A current database must be set on the connection (e.g. USE DATABASE DATA).
+  - The query must fall within the Snowflake history retention window.
+  - Scoped to the connection's role and account.
+  returns_none_when: No matching query is found.
+common_failures:
+- symptom: '"Not authenticated" / login loops'
+  remediation: Run `uv run komodo login` and complete the browser OAuth flow; ensure CLI and SDK use the same account.
+- symptom: Connection succeeds but queries fail on database/role/syntax
+  remediation: Run USE DATABASE, USE SCHEMA, and USE ROLE as required for the account.
+- symptom: CLI and SDK disagree on credentials
+  remediation: Ensure both resolve the same KOMODO_CREDENTIALS_PATH.
+- symptom: MCP server cannot find `komodo` or fails to start
+  remediation: Set cwd in the MCP config to the project directory containing a pyproject.toml that depends on komodo.
+- symptom: Long-running or blocked queries
+  remediation: Use execute_query_async for submit-and-poll flows.
+- symptom: Python version error
+  remediation: 'Marmot Development Kit requires Python >=3.11, <3.14.'
+related:
+  conventions: conventions/komodohealth-conventions.yml
+  authentication: authentication/komodohealth-authentication.yml
