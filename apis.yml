@@ -11,8 +11,12 @@ description: >-
   client credentials for machines) and broker access to a dedicated,
   per-account Komodo-managed Snowflake warehouse. The same package ships a
   first-party Model Context Protocol server that lets AI assistants explore
-  warehouse schemas and drive the Komodo App Builder, plus a beta Cohort API for
-  interactive patient-cohort exploration over ICD-10, CPT/HCPCS and NDC codes.
+  warehouse schemas and drive the Komodo App Builder, a Marmot Analysis API
+  reachable from `client.marmot` and `komodo marmot -c`, and a beta Cohort API
+  for interactive patient-cohort exploration over ICD-10, CPT/HCPCS and NDC
+  codes. Authentication runs against Komodo's own OpenID Connect authorization
+  server at auth.komodohealth.com, which publishes anonymous OIDC and RFC 8414
+  discovery documents.
 accessModel:
   pricing: unknown
   onboarding: self-serve
@@ -36,7 +40,7 @@ x-tier: enriched
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-15'
 tags:
 - Company
 - Healthcare
@@ -78,6 +82,14 @@ apis:
     url: https://docs.komodohealth.com/reference/sdk/
   - type: Authentication
     url: authentication/komodo-health-authentication.yml
+  - type: OAuthScopes
+    url: scopes/komodo-health-scopes.yml
+  - type: OpenIDConnect
+    url: well-known/komodo-health-openid-configuration.json
+  - type: RateLimits
+    url: rate-limits/komodo-health-rate-limits.yml
+  - type: Plans
+    url: plans/komodo-health-plans-pricing.yml
   - type: Packages
     url: packages/komodo-health-packages.yml
   - type: SDKs
@@ -150,6 +162,14 @@ common:
   url: well-known/komodo-health-well-known.yml
 - type: Authentication
   url: authentication/komodo-health-authentication.yml
+- type: OAuthScopes
+  url: scopes/komodo-health-scopes.yml
+- type: OpenIDConnect
+  url: well-known/komodo-health-openid-configuration.json
+- type: RateLimits
+  url: rate-limits/komodo-health-rate-limits.yml
+- type: Plans
+  url: plans/komodo-health-plans-pricing.yml
 - type: Conventions
   url: conventions/komodo-health-conventions.yml
 - type: ErrorCatalog
@@ -161,7 +181,7 @@ common:
 - type: AgentSkill
   url: skills/_index.yml
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-15'
+  status: enriched
+  artifacts_added: 6
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
