@@ -1,9 +1,11 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: searched
 source: >-
   https://docs.komodohealth.com/reference/changelog,
   https://docs.komodohealth.com/reference/cli,
-  https://status.komodohealth.com/ and https://trust.komodohealth.com/
+  https://status.komodohealth.com/, https://statuspage.komodohealth.com/,
+  https://www.komodohealth.com/sentinel-security-service-level-agreement/ and
+  https://trust.komodohealth.com/ — re-verified 2026-08-15.
 description: >-
   Versioning, stability tiers, support and availability posture for the Komodo
   Health platform. Komodo versions its developer surface through the `komodo`
@@ -14,7 +16,9 @@ description: >-
 versioning:
   scheme: semver
   vehicle: komodo PyPI package (Marmot Development Kit)
-  current: 3.4.2
+  current: 3.4.3
+  current_published: '2026-07-28'
+  current_observed: '2026-08-15'
   header_based_pinning: false
   client_pinning: 'pip install komodo==<version> / uv add komodo==<version>'
   detail: changelog/komodo-health-changelog.yml
@@ -45,8 +49,15 @@ deprecation:
 status_page:
   url: https://statuspage.komodohealth.com/
   status_observed: 200
-  observed: '2026-07-19'
+  observed: '2026-08-15'
+  vendor: PagerDuty (resolves to cd-*.hosted-status.pagerduty.com)
   alternate_host: https://status.komodohealth.com/
+  alternate_vendor: Atlassian Statuspage (resolves to *.stspg-customer.com)
+  two_vendors_note: >-
+    Komodo runs two status hostnames on two different vendors. Anything served
+    under status.komodohealth.com other than the status feed itself — notably
+    its /.well-known/security.txt — is Atlassian's boilerplate, not Komodo's.
+    See well-known/komodo-health-well-known.yml.
   access: >-
     Login-gated. The status.komodohealth.com host answers 200 with a
     "Komodo Health Status" login interface; components are not publicly listed.
@@ -68,10 +79,25 @@ support:
   self_service_diagnostics: komodo sql-diagnostics <query-id>
 
 sla:
-  published: false
+  published: partial
+  url: https://www.komodohealth.com/sentinel-security-service-level-agreement/
+  status_observed: 200
+  observed: '2026-08-15'
+  covers: Sentinel (security service level agreement)
+  uptime_target: null
   note: >-
-    No public SLA. The trust center records a disaster recovery plan, annual
-    third-party audits and annual third-party penetration testing.
+    UPGRADED 2026-08-15 from `published: false`. A "Sentinel Security Service
+    Level Agreement" page exists and answers 200, but its body is rendered
+    client-side by an embedded OneTrust component: fetching the URL returns only
+    site chrome, so no uptime target, response time or severity matrix can be
+    read by machine. Recorded as partial — the page is published, its terms are
+    not machine-readable. No SLA is published for the Marmot Development Kit,
+    the Snowflake warehouse or the App Builder control plane. The trust center
+    separately records a disaster recovery plan, annual third-party audits and
+    annual third-party penetration testing.
+  related_terms:
+    - https://www.komodohealth.com/komodo-health-general-terms-and-conditions/
+    - https://www.komodohealth.com/terms-of-service/
 
 environments:
   - {name: production, public: true, default: true}

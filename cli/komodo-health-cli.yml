@@ -1,8 +1,9 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: searched
 source: >-
   https://docs.komodohealth.com/reference/cli and
-  https://docs.komodohealth.com/reference/app-builder-cli
+  https://docs.komodohealth.com/reference/app-builder-cli — re-read 2026-08-15,
+  adding `komodo marmot` and `komodo beta data-ingestion`.
 description: >-
   The `komodo` CLI — the command-line half of the Marmot Development Kit. It
   handles OAuth login, account selection, service-principal (M2M) credentials,
@@ -46,6 +47,18 @@ commands:
     - {name: plugin install, description: 'Install a Komodo CLI plugin package. With no arguments installs komodo-internal-tools from Komodo''s internal registry.', flags: ['--package', '--path']}
     - {name: plugin uninstall, description: Uninstall a plugin package.}
     - {name: plugin list, description: List installed plugins and their registered CLI commands and MCP tools.}
+  marmot:
+    added_observed: '2026-08-15'
+    note: >-
+      ADDED 2026-08-15 — not present in the 2026-07-19 capture of the CLI
+      reference. Backed by the new Marmot Analysis API and the `MarmotApi` SDK
+      client (client.marmot).
+    commands:
+      - name: marmot
+        description: >-
+          Open Marmot in your browser, or chat with Marmot from the terminal.
+        flags: ['-c "<message>" — send a message and start/continue an interactive terminal conversation through Marmot''s Analysis API']
+        docs: https://docs.komodohealth.com/guides-tutorials/guides/11-marmot-analyses/
   utility:
     - {name: docs, description: Open the Marmot Development Kit documentation in your browser.}
     - {name: feedback, description: Submit feedback about the Marmot Development Kit.}
@@ -97,6 +110,12 @@ commands:
           approximate or exact distinct patient counts, and demographic
           summaries by time trend, gender, age, state, race/ethnicity and
           mortality.
+      - name: beta data-ingestion
+        added_observed: '2026-08-15'
+        description: >-
+          Beta data-ingestion command. ADDED 2026-08-15 — listed under
+          `komodo beta` on the CLI reference; Komodo publishes no further
+          detail for it, so nothing beyond its existence is asserted here.
 
 key_flows:
   first_run: [login, account set, sql-execute]
@@ -104,3 +123,4 @@ key_flows:
   m2m_setup: [login, service-principal create]
   app_deploy: [app list, build status, app get-status, app display-latest-logs]
   failure_triage: [sql-diagnostics]
+  marmot_chat: [login, account set, marmot]

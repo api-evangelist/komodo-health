@@ -1,42 +1,119 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: probed
-source: live HTTP probe of Komodo Health hosts on 2026-07-19
+source: live HTTP probe of every Komodo Health host in this profile on 2026-08-15
 description: >-
   Probe of the standard /.well-known/ discovery surface across every Komodo
-  Health host in this profile. No well-known document is published on any host —
-  an honest negative result. Note that Komodo does publish an llms.txt at the
-  site root (captured verbatim in llms/komodo-health-llms.txt), and that
-  https://api.komodohealth.com/openapi.json answers 401 rather than 404,
-  indicating a real but authentication-gated API surface with no public spec.
-probed: '2026-07-19'
-found: 0
+  Health host. UPGRADED 2026-08-15: the 2026-07-19 round probed only
+  www/docs/api and recorded found: 0. The 401 challenge returned by the Kong
+  gateway at api.komodohealth.com names its authorization server —
+  `WWW-Authenticate: Bearer realm="auth.komodohealth.com", error="invalid_token"`
+  — and that host publishes a full, anonymous OIDC discovery surface. Three real
+  documents are now captured verbatim: OpenID Connect discovery (RFC 8414 /
+  OIDC Discovery 1.0), OAuth 2.0 Authorization Server Metadata, and the JWKS.
+  This is a genuine WellKnown hit, not a recorded absence.
+probed: '2026-08-15'
+found: 3
 
 hosts:
+  - host: auth.komodohealth.com
+    role: authorization server (Komodo-operated, Auth0-backed)
+    note: >-
+      Discovered from the WWW-Authenticate challenge on api.komodohealth.com.
+      issuer is https://auth.komodohealth.com/ — a Komodo-owned host, so these
+      documents belong to Komodo Health.
+    paths:
+      - {path: /.well-known/openid-configuration, status: 200, file: komodo-health-openid-configuration.json}
+      - {path: /.well-known/oauth-authorization-server, status: 200, file: komodo-health-oauth-authorization-server.json}
+      - {path: /.well-known/jwks.json, status: 200, file: komodo-health-jwks.json}
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+      - {path: /llms.txt, status: 404, file: null}
   - host: www.komodohealth.com
     paths:
       - {path: /.well-known/security.txt, status: 404, file: null}
-      - {path: /security.txt, status: 404, file: null}
       - {path: /.well-known/openid-configuration, status: 404, file: null}
       - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
       - {path: /.well-known/api-catalog, status: 404, file: null}
       - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
       - {path: /llms.txt, status: 200, file: ../llms/komodo-health-llms.txt}
+  - host: api.komodohealth.com
+    role: Kong API gateway (public edge of the authenticated control plane)
+    note: >-
+      Every /.well-known/ path returns the gateway's `no Route matched with
+      those values` 404. Nothing is served anonymously.
+    paths:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/oauth-protected-resource, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
   - host: docs.komodohealth.com
-    note: All /.well-known/ paths answer 403 (edge deny), not 404 — nothing is served.
+    note: >-
+      Every /.well-known/ path answers 403 with an S3-style XML error body (edge
+      deny). Nothing is served.
     paths:
       - {path: /.well-known/security.txt, status: 403, file: null}
-      - {path: /security.txt, status: 403, file: null}
       - {path: /.well-known/openid-configuration, status: 403, file: null}
       - {path: /.well-known/oauth-authorization-server, status: 403, file: null}
       - {path: /.well-known/api-catalog, status: 403, file: null}
       - {path: /.well-known/ai-plugin.json, status: 403, file: null}
-  - host: api.komodohealth.com
-    note: Host resolves and answers; /openapi.json returns 401 (auth-gated, no public spec).
+      - {path: /.well-known/agent-card.json, status: 403, file: null}
+      - {path: /.well-known/agent.json, status: 403, file: null}
+  - host: statuspage.komodohealth.com
+    vendor: PagerDuty (cd-*.hosted-status.pagerduty.com)
+    note: >-
+      SPA catch-all — every /.well-known/* path returns HTTP 200 with the same
+      HTML shell. REJECTED as false positives; no document is served. This is
+      the dominant false-positive shape for this probe.
     paths:
-      - {path: /.well-known/security.txt, status: 404, file: null}
-      - {path: /security.txt, status: 404, file: null}
-      - {path: /.well-known/openid-configuration, status: 404, file: null}
-      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/security.txt, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /.well-known/agent-card.json, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /.well-known/agent.json, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /.well-known/api-catalog, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /.well-known/ai-plugin.json, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /llms.txt, status: 200, file: null, rejected: html-spa-shell}
+  - host: trust.komodohealth.com
+    vendor: Conveyor
+    note: SPA catch-all — 200 HTML on every /.well-known/* path. REJECTED.
+    paths:
+      - {path: /.well-known/security.txt, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /.well-known/agent-card.json, status: 200, file: null, rejected: html-spa-shell}
+      - {path: /.well-known/agent.json, status: 200, file: null, rejected: html-spa-shell}
+  - host: status.komodohealth.com
+    vendor: Atlassian Statuspage (*.stspg-customer.com)
+    note: >-
+      Serves a real, PGP-signed RFC 9116 security.txt at HTTP 200 — but it is
+      ATLASSIAN's, not Komodo's. Its own Canonical field says
+      https://www.atlassian.com/.well-known/security.txt and every Contact is an
+      Atlassian address. NOT credited to Komodo Health; recorded here so a later
+      round does not mistake vendor boilerplate for a provider security program.
+    paths:
+      - {path: /.well-known/security.txt, status: 200, file: null, rejected: vendor-boilerplate-atlassian}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
       - {path: /.well-known/api-catalog, status: 404, file: null}
-      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
-      - {path: /openapi.json, status: 401, file: null}
+
+security_txt:
+  published_by_komodo: false
+  note: >-
+    No RFC 9116 security.txt is served by Komodo Health on any host it operates
+    (www, docs, api, auth). The only security.txt reachable under a
+    komodohealth.com name is Atlassian's, served by the Statuspage vendor at
+    status.komodohealth.com, and is explicitly canonicalized to atlassian.com.
+    No SecurityTxt pointer is emitted.
+
+agent_card:
+  found: false
+  note: >-
+    /.well-known/agent-card.json and the legacy /.well-known/agent.json were
+    probed on all seven hosts. Real 404s on auth/api/www/status; 403 on docs;
+    200-HTML SPA shells on statuspage and trust, which are rejected. No A2A
+    agent card exists, so no a2a/ artifact is written.

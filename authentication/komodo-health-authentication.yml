@@ -1,15 +1,77 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: searched
-source: https://docs.komodohealth.com/guides-tutorials/guides/2-authentication
+source: >-
+  https://docs.komodohealth.com/guides-tutorials/guides/2-authentication and —
+  new on 2026-08-15 — the authorization server's own discovery documents at
+  https://auth.komodohealth.com/.well-known/openid-configuration and
+  /.well-known/oauth-authorization-server, saved verbatim under well-known/.
 description: >-
   How callers authenticate to the Komodo Health platform. Komodo supports two
   mutually exclusive modes: interactive web login (OAuth 2.0 Device
   Authorization Flow, yielding a JWT) and machine-to-machine service-principal
   credentials (client_id / client_secret). Every call is scoped to a Komodo
   account, each of which maps to a dedicated Komodo-managed Snowflake warehouse.
-  Derived from the published auth guide — Komodo does not publish an OpenAPI
-  document, so these schemes are documented rather than machine-read.
+
+  UPGRADED 2026-08-15: the 2026-07-19 round could only document these schemes
+  from prose because Komodo publishes no OpenAPI. The Kong gateway at
+  api.komodohealth.com answers every anonymous request with
+  `WWW-Authenticate: Bearer realm="auth.komodohealth.com", error="invalid_token"`,
+  and that authorization server publishes a full anonymous OIDC discovery
+  document. The endpoints, grants, PKCE methods, signing algorithms and token
+  endpoint auth methods below are now machine-read from the provider rather than
+  inferred, and they corroborate the documented flows exactly (the device
+  authorization endpoint confirms `komodo login`; client_credentials confirms
+  service principals).
 docs: https://docs.komodohealth.com/guides-tutorials/guides/2-authentication
+
+authorization_server:
+  issuer: https://auth.komodohealth.com/
+  discovery:
+    openid_configuration: https://auth.komodohealth.com/.well-known/openid-configuration
+    oauth_authorization_server: https://auth.komodohealth.com/.well-known/oauth-authorization-server
+    status: 200
+    probed: '2026-08-15'
+    files:
+      - well-known/komodo-health-openid-configuration.json
+      - well-known/komodo-health-oauth-authorization-server.json
+      - well-known/komodo-health-jwks.json
+  backed_by: Auth0 (auth0.com grant-type extensions present in grant_types_supported)
+  ownership_note: >-
+    auth.komodohealth.com is a Komodo-owned hostname and the issuer claim is
+    https://auth.komodohealth.com/, so this authorization server belongs to
+    Komodo Health even though the underlying identity platform is Auth0.
+  endpoints:
+    authorization: https://auth.komodohealth.com/authorize
+    token: https://auth.komodohealth.com/oauth/token
+    device_authorization: https://auth.komodohealth.com/oauth/device/code
+    userinfo: https://auth.komodohealth.com/userinfo
+    jwks: https://auth.komodohealth.com/.well-known/jwks.json
+    revocation: https://auth.komodohealth.com/oauth/revoke
+    registration: https://auth.komodohealth.com/oidc/register
+    mfa_challenge: https://auth.komodohealth.com/mfa/challenge
+    backchannel_authentication: https://auth.komodohealth.com/bc-authorize
+    global_token_revocation: https://auth.komodohealth.com/oauth/global-token-revocation/connection/{connectionName}
+  grant_types_supported:
+    - client_credentials
+    - authorization_code
+    - refresh_token
+    - password
+    - implicit
+    - urn:ietf:params:oauth:grant-type:device_code
+    - urn:ietf:params:oauth:grant-type:token-exchange
+    - urn:ietf:params:oauth:grant-type:jwt-bearer
+    - http://auth0.com/oauth/grant-type/password-realm
+    - http://auth0.com/oauth/grant-type/passwordless/otp
+    - http://auth0.com/oauth/grant-type/mfa-oob
+    - http://auth0.com/oauth/grant-type/mfa-otp
+    - http://auth0.com/oauth/grant-type/mfa-recovery-code
+  code_challenge_methods_supported: [S256, plain]
+  token_endpoint_auth_methods_supported: [client_secret_basic, client_secret_post, private_key_jwt, none]
+  id_token_signing_alg_values_supported: [HS256, RS256, PS256]
+  dpop_signing_alg_values_supported: [ES256]
+  subject_types_supported: [public]
+  backchannel_logout_supported: true
+  scopes_supported_detail: scopes/komodo-health-scopes.yml
 
 schemes:
   - id: web_login
@@ -84,8 +146,15 @@ environments:
   - {name: development, public: false, requires: komodo-internal-tools plugin}
 
 scopes:
-  published: false
+  published: partial
+  detail: scopes/komodo-health-scopes.yml
   note: >-
-    Komodo does not publish an OAuth scope or permission reference. App-level
-    authorization is expressed as grantable roles on Komodo Apps (see the
-    App Builder sharing tools) and RBAC/FGA on app and secret resources.
+    UPGRADED 2026-08-15. The authorization server advertises 14 scopes in its
+    discovery document, but every one of them is a standard OpenID Connect
+    identity/claim scope (openid, profile, email, offline_access, name,
+    given_name, family_name, nickname, picture, created_at, identities, phone,
+    address, email_verified). Komodo advertises NO resource scopes for its own
+    API and publishes no scopes/permissions reference page. Platform
+    authorization is expressed as Komodo account membership plus RBAC/FGA
+    grantable roles on Komodo Apps and secrets (see the App Builder sharing
+    tools). Do not read the OIDC scope list as a Komodo permission model.

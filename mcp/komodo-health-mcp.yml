@@ -1,39 +1,37 @@
 generated: '2026-07-19'
 method: searched
-source: >-
-  https://docs.komodohealth.com/guides-tutorials/guides/6-mcp-server and
-  https://docs.komodohealth.com/reference/app-builder-mcp — Komodo publishes a
-  first-party MCP server shipped inside the `komodo` PyPI package.
-description: >-
-  The Komodo MCP server connects AI assistants (Cursor, VS Code Copilot, Claude
-  Desktop) to a customer's Komodo-managed Snowflake warehouse for schema
-  exploration and SQL assistance, and to the Komodo App Builder for scaffolding,
-  building, deploying, and sharing Komodo Apps. It is a local stdio server
-  launched by the client, authenticated with the same Komodo OAuth session the
-  CLI uses. All tools operate against the `production` environment.
+source: https://docs.komodohealth.com/guides-tutorials/guides/6-mcp-server and https://docs.komodohealth.com/reference/app-builder-mcp
+  — Komodo publishes a first-party MCP server shipped inside the `komodo` PyPI package.
+description: The Komodo MCP server connects AI assistants (Cursor, VS Code Copilot, Claude Desktop) to
+  a customer's Komodo-managed Snowflake warehouse for schema exploration and SQL assistance, and to the
+  Komodo App Builder for scaffolding, building, deploying, and sharing Komodo Apps. It is a local stdio
+  server launched by the client, authenticated with the same Komodo OAuth session the CLI uses. All tools
+  operate against the `production` environment.
 status: published
 official: true
 docs: https://docs.komodohealth.com/guides-tutorials/guides/6-mcp-server
 reference: https://docs.komodohealth.com/reference/app-builder-mcp
-
 server:
   name: komodo
   transport: stdio
   hosted: false
   remote_url: null
   command: uv
-  args: [run, komodo, mcp, run]
+  args:
+  - run
+  - komodo
+  - mcp
+  - run
   cwd: <the project directory containing the pyproject.toml where komodo is installed>
   package: komodo (PyPI)
   config_helper: uv run komodo mcp show-config
   config_flags:
-    - {flag: --name/-n, description: 'Custom server name (default: komodo)'}
-
+  - flag: --name/-n
+    description: 'Custom server name (default: komodo)'
 prerequisites:
-  - Install the Marmot Development Kit (uv add komodo)
-  - Authenticate — uv run komodo login
-  - Select an account — uv run komodo account set
-
+- Install the Marmot Development Kit (uv add komodo)
+- Authenticate — uv run komodo login
+- Select an account — uv run komodo account set
 client_config:
   cursor:
     file: ~/.cursor/mcp.json
@@ -43,71 +41,94 @@ client_config:
     key: mcp.servers
   claude_desktop:
     key: mcpServers
-  server_definition: |
-    "komodo": {
-      "command": "uv",
-      "args": ["run", "komodo", "mcp", "run"],
-      "cwd": "/path/to/your/komodo/project"
-    }
-
+  server_definition: "\"komodo\": {\n  \"command\": \"uv\",\n  \"args\": [\"run\", \"komodo\", \"mcp\"\
+    , \"run\"],\n  \"cwd\": \"/path/to/your/komodo/project\"\n}\n"
 tools:
   snowflake:
-    - name: list_snowflake
-      description: >-
-        Explore the Komodo Snowflake warehouse. Dispatches on a `list_type`
-        parameter.
-      list_types:
-        - {list_type: database, description: List accessible databases, required_parameters: []}
-        - {list_type: schema, description: Schemas in a database, required_parameters: [database]}
-        - {list_type: table, description: 'Tables in a schema (metadata / row counts)', required_parameters: [database, schema]}
-        - {list_type: column, description: Column definitions, required_parameters: [database, schema, table]}
+  - name: list_snowflake
+    description: Explore the Komodo Snowflake warehouse. Dispatches on a `list_type` parameter.
+    list_types:
+    - list_type: database
+      description: List accessible databases
+      required_parameters: []
+    - list_type: schema
+      description: Schemas in a database
+      required_parameters:
+      - database
+    - list_type: table
+      description: Tables in a schema (metadata / row counts)
+      required_parameters:
+      - database
+      - schema
+    - list_type: column
+      description: Column definitions
+      required_parameters:
+      - database
+      - schema
+      - table
   app_builder:
     count: 26
-    note: >-
-      15 app development + 6 secrets + 5 sharing tools. The server appends
-      detailed workflow instructions to its prompt so assistants follow the
-      recommended scaffold -> validate -> register -> build -> status flow.
+    note: 15 app development + 6 secrets + 5 sharing tools. The server appends detailed workflow instructions
+      to its prompt so assistants follow the recommended scaffold -> validate -> register -> build ->
+      status flow.
     scaffolding_configuration:
-      - scaffold_app
-      - get_available_templates
-      - validate_devfile
-      - generate_devfile
+    - scaffold_app
+    - get_available_templates
+    - validate_devfile
+    - generate_devfile
     build_deploy:
-      - register_app
-      - build_app
-      - get_build_scan_report
-      - cancel_build
+    - register_app
+    - build_app
+    - get_build_scan_report
+    - cancel_build
     app_management:
-      - list_apps
-      - get_app
-      - get_app_status
-      - get_app_logs
+    - list_apps
+    - get_app
+    - get_app_status
+    - get_app_logs
     lifecycle:
-      - enable_app
-      - disable_app
-      - delete_app
+    - enable_app
+    - disable_app
+    - delete_app
     secrets:
-      - create_secret
-      - get_secret
-      - list_secrets
-      - update_secret
-      - delete_secret
-      - share_secret
+    - create_secret
+    - get_secret
+    - list_secrets
+    - update_secret
+    - delete_secret
+    - share_secret
     sharing_permissions:
-      - list_grantable_roles
-      - list_app_permissions
-      - grant_app_role
-      - revoke_app_role
-      - list_account_users
-
+    - list_grantable_roles
+    - list_app_permissions
+    - grant_app_role
+    - revoke_app_role
+    - list_account_users
 recommended_workflow:
-  - {step: 1, tool: get_available_templates, note: 'Always call first. Templates: FastAPI, Streamlit, React, multi-container, react-advanced, restate-agent.'}
-  - {step: 2, tool: scaffold_app, note: 'Generate source, Dockerfile, devfile.yaml and README from the selected template.'}
-  - {step: 3, tool: validate_devfile, note: 'Always validate before building — catches schema errors, missing fields, port mismatches, invalid app names.'}
-  - {step: 4, tool: register_app, note: 'Required before build_app when the app uses Komodo secrets (RBAC/FGA needs the app Custom Resource first).'}
-  - {step: 5, tool: build_app, note: 'Default remote Build API path (platform worker, ECR, signing) needs only Komodo OAuth. build_mode=local runs BuildKit client-side then uploads via the prebuilt path.'}
-  - {step: 6, tool: get_app_status, note: 'Only if asked — poll every 10-15s until RUNNING or FAILED, then get_app_logs on failure.'}
-
-internal_note: >-
-  In internal Komodo environments the `komodo-internal-tools` plugin registers
-  additional MCP tools; that list is not public.
+- step: 1
+  tool: get_available_templates
+  note: 'Always call first. Templates: FastAPI, Streamlit, React, multi-container, react-advanced, restate-agent.'
+- step: 2
+  tool: scaffold_app
+  note: Generate source, Dockerfile, devfile.yaml and README from the selected template.
+- step: 3
+  tool: validate_devfile
+  note: Always validate before building — catches schema errors, missing fields, port mismatches, invalid
+    app names.
+- step: 4
+  tool: register_app
+  note: Required before build_app when the app uses Komodo secrets (RBAC/FGA needs the app Custom Resource
+    first).
+- step: 5
+  tool: build_app
+  note: Default remote Build API path (platform worker, ECR, signing) needs only Komodo OAuth. build_mode=local
+    runs BuildKit client-side then uploads via the prebuilt path.
+- step: 6
+  tool: get_app_status
+  note: Only if asked — poll every 10-15s until RUNNING or FAILED, then get_app_logs on failure.
+internal_note: In internal Komodo environments the `komodo-internal-tools` plugin registers additional
+  MCP tools; that list is not public.
+deployment:
+  mode: local-stdio
+  verified: searched
+  checked: '2026-08-12'
+  source: catalog MCP census

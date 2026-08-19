@@ -1,4 +1,4 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: searched
 source: >-
   https://docs.komodohealth.com/ — the cross-cutting runtime semantics of the
@@ -58,18 +58,48 @@ idempotency:
     rather than assumed.
 
 pagination:
-  style: cursor-free / result-set fetch
-  description: >-
-    Results are consumed through DB-API cursor semantics rather than an HTTP
-    pagination envelope — fetchall() for all rows, fetchone() for a single row,
-    fetchmany(n) for batches. Row volume is bounded with SQL LIMIT.
-  docs: https://docs.komodohealth.com/guides-tutorials/guides/3-executing-queries
+  style: mixed — DB-API cursor fetch for queries, token cursor on some control-plane lists
+  warehouse_queries:
+    description: >-
+      Query results are consumed through DB-API cursor semantics rather than an
+      HTTP pagination envelope — fetchall() for all rows, fetchone() for a
+      single row, fetchmany(n) for batches. Row volume is bounded with SQL LIMIT.
+    docs: https://docs.komodohealth.com/guides-tutorials/guides/3-executing-queries
+  control_plane:
+    description: >-
+      ADDED 2026-08-15. The 2026-07-19 capture recorded pagination as
+      "cursor-free" across the board; that is true of warehouse queries but not
+      of the control plane. `list_secrets` is token-paginated: the response
+      carries `.has_more` (bool) and `.next_token` (str or None), and the call
+      accepts `next_token` to fetch the following page. `list_files` accepts an
+      optional `prefix` filter but exposes no pagination token.
+    fields: [has_more, next_token]
+    parameter: next_token
+    operations: [list_secrets]
+    page_size_max: not published
+    docs: https://docs.komodohealth.com/reference/sdk
 
 async_execution:
   supported: true
-  mechanism: execute_query_async — submit-and-poll
-  status_check: is_still_running
-  docs: https://docs.komodohealth.com/guides-tutorials/guides/5-async-queries
+  warehouse_queries:
+    mechanism: execute_query_async — submit-and-poll
+    status_check: is_still_running
+    docs: https://docs.komodohealth.com/guides-tutorials/guides/5-async-queries
+  marmot_analyses:
+    added_observed: '2026-08-15'
+    mechanism: >-
+      client.marmot — create_analysis / create_conversation / send_message, then
+      wait_until_idle (default timeout_seconds 300.0) or poll get_status;
+      artifacts retrieved with list_files / get_file, history with get_messages.
+    entitlement_check: has_access()
+    exceptions: [MarmotApiError, MarmotConnectionError, TimeoutError]
+    docs: https://docs.komodohealth.com/guides-tutorials/guides/11-marmot-analyses/
+  durable_execution:
+    added_observed: '2026-08-15'
+    note: >-
+      A Restate-based durable-workflow guide and a `restate-agent` App Builder
+      template are published for long-running work inside Komodo Apps.
+    docs: https://docs.komodohealth.com/guides-tutorials/guides/9-restate-durable-execution/
 
 request_tracing:
   identifiers:
@@ -104,10 +134,13 @@ versioning:
 
 rate_limits:
   published: false
+  detail: rate-limits/komodo-health-rate-limits.yml
   note: >-
     No rate-limit headers or quota policy are published. Concurrency and cost
     are governed by the account's dedicated Snowflake warehouse sizing rather
-    than an API quota.
+    than an API quota. Re-verified across all ten guides and the SDK/CLI
+    reference on 2026-08-15; the anonymous 401 from api.komodohealth.com carries
+    no RateLimit-* or Retry-After header.
 
 secrets:
   api: SecretsAPI (SDK) / komodo secrets (CLI) / 6 MCP tools
@@ -119,7 +152,11 @@ secrets:
 
 cross_references:
   authentication: authentication/komodo-health-authentication.yml
+  scopes: scopes/komodo-health-scopes.yml
   errors: errors/komodo-health-problem-types.yml
   lifecycle: lifecycle/komodo-health-lifecycle.yml
   cli: cli/komodo-health-cli.yml
   mcp: mcp/komodo-health-mcp.yml
+  rate_limits: rate-limits/komodo-health-rate-limits.yml
+  plans: plans/komodo-health-plans-pricing.yml
+  well_known: well-known/komodo-health-well-known.yml

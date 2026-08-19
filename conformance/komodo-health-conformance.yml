@@ -1,8 +1,10 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: searched
 source: >-
   https://docs.komodohealth.com/ (authentication and MCP guides),
-  https://trust.komodohealth.com/, and live probes on 2026-07-19.
+  https://trust.komodohealth.com/, and live probes on 2026-07-19 and 2026-08-15
+  — the later round adding the authorization-server discovery documents at
+  https://auth.komodohealth.com/.well-known/openid-configuration.
 description: >-
   Which industry and cross-cutting standards the Komodo Health platform
   demonstrably conforms to, with the evidence for each. Komodo's developer
@@ -38,18 +40,78 @@ standards:
       (Snowflake exploration + 26 App Builder tools).
       https://docs.komodohealth.com/guides-tutorials/guides/6-mcp-server
   - id: oidc
-    name: OpenID Connect
-    conforms: false
+    name: OpenID Connect (Discovery 1.0)
+    conforms: true
+    corrected: '2026-08-15'
     evidence: >-
-      No /.well-known/openid-configuration on any host (404/403 on 2026-07-19)
-      and no OIDC discovery documented.
+      CORRECTED from conforms:false. Komodo's authorization server publishes a
+      complete OIDC discovery document anonymously at
+      https://auth.komodohealth.com/.well-known/openid-configuration (HTTP 200,
+      issuer https://auth.komodohealth.com/), with authorization, token,
+      userinfo, jwks, revocation and registration endpoints, claims_supported
+      and id_token_signing_alg_values_supported. The 2026-07-19 round probed
+      only www/docs/api and missed the auth host, which is named in the
+      gateway's own WWW-Authenticate challenge. Saved verbatim to
+      well-known/komodo-health-openid-configuration.json
+  - id: rfc8414
+    name: 'RFC 8414 OAuth 2.0 Authorization Server Metadata'
+    conforms: true
+    evidence: >-
+      https://auth.komodohealth.com/.well-known/oauth-authorization-server
+      returns 200 with the authorization server metadata document (probed
+      2026-08-15). Saved to
+      well-known/komodo-health-oauth-authorization-server.json
+  - id: rfc7517
+    name: 'RFC 7517 JSON Web Key Set'
+    conforms: true
+    evidence: >-
+      https://auth.komodohealth.com/.well-known/jwks.json returns 200 with an
+      RSA signing key set (probed 2026-08-15).
+  - id: rfc7636
+    name: 'RFC 7636 PKCE'
+    conforms: true
+    evidence: >-
+      code_challenge_methods_supported = [S256, plain] in the discovery
+      document.
+  - id: rfc7523
+    name: 'RFC 7523 JWT client authentication / assertion grants'
+    conforms: true
+    evidence: >-
+      token_endpoint_auth_methods_supported includes private_key_jwt and
+      grant_types_supported includes urn:ietf:params:oauth:grant-type:jwt-bearer.
+  - id: rfc8693
+    name: 'RFC 8693 OAuth 2.0 Token Exchange'
+    conforms: true
+    evidence: >-
+      grant_types_supported includes
+      urn:ietf:params:oauth:grant-type:token-exchange.
+  - id: rfc9449
+    name: 'RFC 9449 DPoP (demonstrating proof of possession)'
+    conforms: true
+    evidence: >-
+      dpop_signing_alg_values_supported = [ES256] in the discovery document.
+  - id: rfc7009
+    name: 'RFC 7009 OAuth 2.0 Token Revocation'
+    conforms: true
+    evidence: >-
+      revocation_endpoint = https://auth.komodohealth.com/oauth/revoke
   - id: openapi
     name: OpenAPI
     conforms: partial
     evidence: >-
       The SDK bundles generated OpenAPI clients (exceptions subclass
       OpenApiException), so OpenAPI is used internally, but no OpenAPI document
-      is published — https://api.komodohealth.com/openapi.json returns 401.
+      is published.
+    correction: >-
+      2026-08-15 — the 2026-07-19 note read the 401 at
+      https://api.komodohealth.com/openapi.json as evidence of a real
+      auth-gated spec route. It is not. The Kong gateway returns the identical
+      401 for ANY path matching that shape, including invented ones
+      (/zzzrandom/openapi.json, /openapi.jsonx), while unmatched paths such as
+      /swagger.json and /api-docs return `no Route matched with those values`
+      404s. The 401 is a blanket auth plugin, not a route hit, so it is NOT
+      evidence that an OpenAPI document exists behind it. Restated as: no
+      public OpenAPI, and no observable evidence either way about a private one.
   - id: fhir
     name: HL7 FHIR
     conforms: false
@@ -150,7 +212,20 @@ standards:
   - id: rfc9116
     name: 'RFC 9116 security.txt'
     conforms: false
-    evidence: No /.well-known/security.txt on any host (probed 2026-07-19).
+    evidence: >-
+      No /.well-known/security.txt is served by any Komodo-operated host (www,
+      docs, api, auth) — re-probed 2026-08-15. A real PGP-signed security.txt
+      does answer 200 at status.komodohealth.com, but it is Atlassian's, served
+      by the Statuspage vendor and canonicalized to
+      https://www.atlassian.com/.well-known/security.txt. Not credited.
+  - id: a2a
+    name: 'A2A Agent Card'
+    conforms: false
+    evidence: >-
+      /.well-known/agent-card.json and the legacy /.well-known/agent.json were
+      probed on all seven hosts on 2026-08-15. No card exists (404s on
+      auth/api/www/status, 403 on docs, rejected 200-HTML SPA shells on
+      statuspage and trust).
   - id: jsonapi
     name: 'JSON:API'
     conforms: false

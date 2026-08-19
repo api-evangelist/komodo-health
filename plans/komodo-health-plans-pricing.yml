@@ -1,0 +1,57 @@
+generated: '2026-08-15'
+method: searched
+source: >-
+  https://www.komodohealth.com/ (full navigation + Yoast sitemap_index.xml),
+  https://www.komodohealth.com/get-demo/, https://docs.komodohealth.com/ and
+  https://pypi.org/project/komodo/ — searched 2026-08-15.
+description: >-
+  Komodo Health publishes NO plans, tiers or prices. There is no pricing page:
+  /pricing, /pricing/ and /plans/ all return HTTP 404, and the page sitemap
+  contains no pricing URL. Every commercial path on the site funnels to a
+  "Get Demo" / "Contact Us" sales form. This is an enterprise contract-only
+  model — the Healthcare Map data foundation, Marmot AI layer and Komodo Home
+  workflow environment are sold as negotiated subscriptions with per-account
+  data entitlements and a dedicated Komodo-managed Snowflake warehouse, whose
+  sizing (and therefore cost) is set per account rather than published.
+
+  Recording the zero deliberately: an omitted plans file reads as "not checked",
+  whereas plan_count: 0 with evidence reads as "checked, nothing published".
+
+plan_count: 0
+pricing_model: enterprise-contract
+public_pricing: false
+free_tier: false
+self_serve_purchase: false
+
+signup:
+  url: https://www.komodohealth.com/get-demo/
+  status: 200
+  type: sales-qualified demo request
+  note: >-
+    The only public entry point. There is no self-serve signup that provisions a
+    Komodo account; the `komodo` PyPI package installs freely but `komodo login`
+    authenticates against an existing customer account provisioned by Komodo.
+
+developer_access:
+  package_public: true
+  package: https://pypi.org/project/komodo/
+  note: >-
+    The Marmot Development Kit itself is a public, freely installable PyPI
+    package. It is a client, not an entitlement — without a provisioned Komodo
+    account and its data subscriptions there is nothing for it to reach.
+
+entitlement_signal:
+  function: client.marmot.has_access()
+  source: https://docs.komodohealth.com/guides-tutorials/guides/11-marmot-analyses/
+  note: >-
+    The SDK exposes an explicit entitlement check, which corroborates that
+    product access is granted per account by contract rather than purchased.
+
+evidence:
+  - {url: 'https://www.komodohealth.com/pricing/', status: 404}
+  - {url: 'https://www.komodohealth.com/pricing', status: 404}
+  - {url: 'https://www.komodohealth.com/plans/', status: 404}
+  - {url: 'https://www.komodohealth.com/get-demo/', status: 200}
+  - {url: 'https://www.komodohealth.com/sitemap_index.xml', status: 200, note: 'page-sitemap.xml carries no pricing or plans URL'}
+
+plans: []

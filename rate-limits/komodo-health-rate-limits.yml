@@ -1,0 +1,81 @@
+generated: '2026-08-15'
+method: searched
+source: >-
+  https://docs.komodohealth.com/ — the full Marmot Development Kit guide set
+  (quickstart, authentication, executing-queries, pandas-integration,
+  async-queries, mcp-server, app-builder, troubleshooting,
+  restate-durable-execution, marmot-analyses) and the SDK, CLI and
+  App Builder MCP reference pages, searched 2026-08-15.
+description: >-
+  Komodo Health publishes no rate limits, quotas, throttling policy or
+  rate-limit response headers for any of its surfaces. No document in the Marmot
+  Development Kit documentation names a request ceiling, a concurrency cap, a
+  burst allowance, an X-RateLimit-*/RateLimit-* header, a Retry-After behaviour,
+  or a 429 response. Recorded as an honest zero rather than omitted.
+
+  This is structural rather than an oversight. Komodo's primary developer
+  surface is not a request-metered HTTP API: the SDK opens an authenticated
+  DB-API connection to a per-account, Komodo-managed Snowflake warehouse, so
+  throughput and cost are governed by that warehouse's sizing and the account's
+  data subscriptions, not by an API quota. The App Builder and Marmot Analysis
+  control planes behind api.komodohealth.com are authentication-gated with no
+  public reference, so any limits they enforce are unobservable anonymously.
+
+limit_count: 0
+published: false
+headers_published: false
+exhaustion_status_code: null
+
+limits: []
+
+response_headers:
+  documented: []
+  observed: []
+  observation_note: >-
+    api.komodohealth.com returns HTTP 401 with
+    `WWW-Authenticate: Bearer realm="auth.komodohealth.com", error="invalid_token"`
+    to every anonymous request, so no rate-limit headers can be observed without
+    customer credentials. The response carries only date, content-type,
+    content-length, www-authenticate, access-control-allow-origin,
+    strict-transport-security, cache-control and pragma.
+
+governing_controls:
+  - control: Snowflake warehouse sizing
+    scope: per Komodo account
+    note: >-
+      Each account has a dedicated Komodo-managed Snowflake warehouse. Query
+      concurrency and throughput are a function of that warehouse rather than an
+      API quota. Sizing is not published.
+  - control: SQL LIMIT
+    scope: per query
+    note: Row volume is bounded client-side with SQL LIMIT, not by a server page size.
+  - control: wait_until_idle timeout
+    scope: per Marmot analysis call
+    value: 300 seconds (default; `timeout_seconds` is caller-adjustable)
+    source: https://docs.komodohealth.com/reference/sdk
+    note: >-
+      A client-side wait ceiling on asynchronous Marmot processing — a timeout,
+      not a rate limit. Recorded because it is the only published numeric
+      throughput-adjacent value in the documentation.
+  - control: Snowflake query-history retention window
+    scope: per account
+    note: >-
+      get_query_diagnostics / `komodo sql-diagnostics` only resolve a query ID
+      that still falls inside Snowflake's INFORMATION_SCHEMA.QUERY_HISTORY
+      retention window. The duration is not stated.
+
+pagination_note: >-
+  The only cursor-style limit surface documented is on `list_secrets`, which
+  returns `.has_more` and `.next_token`. No page-size maximum is published.
+  See conventions/komodo-health-conventions.yml.
+
+evidence:
+  - {url: 'https://docs.komodohealth.com/guides-tutorials/guides', status: 200, finding: 'ten guides listed; none covers rate limits, quotas or concurrency'}
+  - {url: 'https://docs.komodohealth.com/reference/sdk', status: 200, finding: 'no rate limits or quotas documented; only wait_until_idle timeout_seconds=300'}
+  - {url: 'https://docs.komodohealth.com/reference/cli', status: 200, finding: 'no base URL, endpoint or rate limit named'}
+  - {url: 'https://api.komodohealth.com/', status: 401, finding: 'no rate-limit headers on the anonymous 401'}
+
+cross_references:
+  conventions: conventions/komodo-health-conventions.yml
+  plans: plans/komodo-health-plans-pricing.yml
+  authentication: authentication/komodo-health-authentication.yml

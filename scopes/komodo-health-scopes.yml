@@ -1,0 +1,102 @@
+generated: '2026-08-15'
+method: probed
+source: https://auth.komodohealth.com/.well-known/openid-configuration
+description: >-
+  OAuth 2.0 / OpenID Connect scopes advertised by Komodo Health's authorization
+  server. Read verbatim from the anonymous OIDC discovery document at
+  auth.komodohealth.com (issuer https://auth.komodohealth.com/), which was
+  discovered from the `WWW-Authenticate: Bearer realm="auth.komodohealth.com"`
+  challenge returned by the Kong gateway at api.komodohealth.com.
+
+  IMPORTANT READING NOTE: every scope below is a standard OpenID Connect
+  identity scope or claim scope. Komodo does NOT advertise resource scopes for
+  its own API (nothing like `read:cohorts` or `write:apps`), and publishes no
+  scopes/permissions reference page. Platform authorization is expressed instead
+  as Komodo account membership plus RBAC/FGA grantable roles on Komodo Apps and
+  secrets. Treat this file as "what the authorization server advertises", not as
+  a Komodo API permission model — that model is not published.
+docs: null
+docs_note: >-
+  No scopes or permissions reference page exists in the Marmot Development Kit
+  documentation (checked docs.komodohealth.com guides + reference, 2026-08-15).
+
+issuer: https://auth.komodohealth.com/
+provider: Auth0-backed, operated on a Komodo-owned host
+
+schemes:
+  - name: KomodoOAuth2
+    type: oauth2
+    source: https://auth.komodohealth.com/.well-known/openid-configuration
+    flows:
+      - flow: deviceCode
+        grant_type: urn:ietf:params:oauth:grant-type:device_code
+        device_authorization_endpoint: https://auth.komodohealth.com/oauth/device/code
+        tokenUrl: https://auth.komodohealth.com/oauth/token
+        used_by: '`komodo login` — interactive web login (RFC 8628)'
+      - flow: clientCredentials
+        grant_type: client_credentials
+        tokenUrl: https://auth.komodohealth.com/oauth/token
+        used_by: service principals — machine-to-machine
+      - flow: authorizationCode
+        grant_type: authorization_code
+        authorizationUrl: https://auth.komodohealth.com/authorize
+        tokenUrl: https://auth.komodohealth.com/oauth/token
+        pkce: [S256, plain]
+
+scopes:
+  - scope: openid
+    description: Request an ID token — OpenID Connect core.
+    kind: oidc-core
+  - scope: profile
+    description: Basic profile claims (name, given_name, family_name, nickname, picture).
+    kind: oidc-core
+  - scope: email
+    description: Email address claim.
+    kind: oidc-core
+  - scope: email_verified
+    description: Email verification status claim.
+    kind: oidc-claim
+  - scope: offline_access
+    description: Issue a refresh token — used by the CLI to persist a session in ~/.komodo/credentials.
+    kind: oidc-core
+  - scope: name
+    description: Full name claim.
+    kind: oidc-claim
+  - scope: given_name
+    description: Given name claim.
+    kind: oidc-claim
+  - scope: family_name
+    description: Family name claim.
+    kind: oidc-claim
+  - scope: nickname
+    description: Nickname claim.
+    kind: oidc-claim
+  - scope: picture
+    description: Profile picture claim.
+    kind: oidc-claim
+  - scope: created_at
+    description: Account creation timestamp claim.
+    kind: oidc-claim
+  - scope: identities
+    description: Linked identity provider records claim.
+    kind: oidc-claim
+  - scope: phone
+    description: Phone number claim.
+    kind: oidc-claim
+  - scope: address
+    description: Address claim.
+    kind: oidc-claim
+
+resource_scopes:
+  published: false
+  note: >-
+    No Komodo-specific API resource scopes are advertised in discovery or
+    documented anywhere public. Access to the per-account Snowflake warehouse is
+    governed by Komodo account selection and the account's data subscriptions;
+    access to Komodo Apps and secrets is governed by RBAC/FGA grantable roles
+    (see the App Builder sharing tools in mcp/komodo-health-mcp.yml).
+
+cross_references:
+  authentication: authentication/komodo-health-authentication.yml
+  well_known: well-known/komodo-health-well-known.yml
+  raw_discovery: well-known/komodo-health-openid-configuration.json

@@ -1,11 +1,19 @@
-generated: '2026-07-19'
+generated: '2026-08-15'
 method: searched
 source: >-
-  https://pypi.org/project/komodo/ and https://docs.komodohealth.com/installation
-  — the Marmot Development Kit is distributed as a single first-party PyPI
-  package that ships both the Python SDK and the `komodo` CLI (and the MCP
-  server). No first-party client libraries were found on npm, Maven Central,
-  NuGet, pkg.go.dev, RubyGems, Packagist or crates.io.
+  https://pypi.org/pypi/komodo/json (registry metadata endpoint, re-read
+  2026-08-15) and https://docs.komodohealth.com/installation — the Marmot
+  Development Kit is distributed as a single first-party PyPI package that ships
+  both the Python SDK and the `komodo` CLI (and the MCP server). No first-party
+  client libraries were found on npm, Maven Central, NuGet, pkg.go.dev,
+  RubyGems, Packagist or crates.io.
+currency:
+  checked: '2026-08-15'
+  verdict: current
+  note: >-
+    The sole first-party SDK shipped 3.4.3 on 2026-07-28, 18 days before this
+    check, and has published 13 releases since 2025-12-01 — an actively
+    maintained client, not an abandoned one.
 description: >-
   First-party client packages published by Komodo Health. Komodo ships a single
   Python distribution — `komodo`, the Marmot Development Kit — which bundles the
@@ -20,11 +28,14 @@ packages:
     registry: pypi
     url: https://pypi.org/project/komodo/
     language: python
-    version: 3.4.2
-    version_observed: '2026-07-19'
+    version: 3.4.3
+    published: '2026-07-28'
+    version_source: https://pypi.org/pypi/komodo/json
+    version_observed: '2026-08-15'
+    previous_version: 3.4.2
+    previous_published: '2026-07-16'
     first_release_observed: '2025-12-01'
-    latest_release_observed: '2026-07-16'
-    releases_published: 12
+    releases_published: 13
     requires_python: '>=3.11, <3.14'
     summary: >-
       Marmot Development Kit — Python SDK and CLI for the Komodo Health platform
@@ -44,6 +55,12 @@ plugins:
     official: true
     public: false
     registry: private
+    version: null
+    published: null
+    version_note: >-
+      No public registry metadata endpoint exists for this package — it is
+      served from Komodo's internal package registry via `komodo plugin
+      install`. Checked, nothing to record.
     note: >-
       Installed via `komodo plugin install` from Komodo's internal package
       registry. Registers additional CLI commands and MCP tools and unlocks the

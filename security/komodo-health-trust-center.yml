@@ -75,10 +75,33 @@ resources:
 
 vulnerability_disclosure:
   published: false
+  reverified: '2026-08-15'
   note: >-
-    No security.txt, bug bounty program, or responsible-disclosure page was
-    found on any Komodo Health host (probed 2026-07-19). See
-    well-known/komodo-health-well-known.yml.
+    No security.txt, bug bounty program, or responsible-disclosure page is
+    published by Komodo Health. Re-verified 2026-08-15 with direct evidence from
+    Komodo's own trust center rather than absence alone: the Conveyor trust
+    profile carries `"report_vulnerability_url": ""` (empty), and its
+    `bug_bounty_resp_disclosure` trust indicator — "Do they have a bug bounty or
+    responsible disclosure program?" — scores `unknown` with "We haven't
+    collected data about this indicator yet." No security/, /responsible-
+    disclosure or /vulnerability-disclosure page exists on www (all 404), no
+    HackerOne/Bugcrowd/Intigriti program was found, and no security.txt is
+    served by any Komodo-operated host.
+  vendor_boilerplate_warning: >-
+    status.komodohealth.com DOES serve a valid PGP-signed RFC 9116 security.txt
+    at HTTP 200 — it is Atlassian's, shipped with the Statuspage product, and
+    self-canonicalizes to https://www.atlassian.com/.well-known/security.txt.
+    It must not be credited to Komodo. No VulnerabilityDisclosure or Security
+    pointer is emitted for this provider.
+  evidence:
+    - {url: 'https://www.komodohealth.com/.well-known/security.txt', status: 404}
+    - {url: 'https://www.komodohealth.com/security/', status: 404}
+    - {url: 'https://www.komodohealth.com/responsible-disclosure/', status: 404}
+    - {url: 'https://www.komodohealth.com/vulnerability-disclosure/', status: 404}
+    - {url: 'https://auth.komodohealth.com/.well-known/security.txt', status: 404}
+    - {url: 'https://api.komodohealth.com/.well-known/security.txt', status: 404}
+    - {url: 'https://trust.komodohealth.com/', status: 200, finding: 'report_vulnerability_url is empty; bug_bounty_resp_disclosure indicator = unknown'}
+  see_also: well-known/komodo-health-well-known.yml
 
 evidence:
 - source: https://trust.komodohealth.com/
