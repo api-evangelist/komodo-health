@@ -17,6 +17,17 @@ description: >-
   codes. Authentication runs against Komodo's own OpenID Connect authorization
   server at auth.komodohealth.com, which publishes anonymous OIDC and RFC 8414
   discovery documents.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: unknown
   onboarding: self-serve
