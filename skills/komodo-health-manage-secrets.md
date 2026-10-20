@@ -1,5 +1,5 @@
 ---
-name: Manage secrets with the Komodo Secrets Service
+name: komodo-health-manage-secrets
 description: >-
   Store, read, list, update, move, and delete secrets in the Komodo Secrets
   Service using the SecretsApi, with correct user / application / shared

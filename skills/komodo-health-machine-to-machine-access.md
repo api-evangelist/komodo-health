@@ -1,5 +1,5 @@
 ---
-name: Set up machine-to-machine access to Komodo
+name: komodo-health-machine-to-machine-access
 description: >-
   Create a Komodo service principal and wire non-interactive, automation-safe
   access to the platform using client-credentials OAuth and named credential

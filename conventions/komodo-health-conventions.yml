@@ -49,6 +49,7 @@ configuration:
   buildkit_host: BUILDKIT_HOST — required on the MCP server process (not just the shell) for local build_mode
 
 idempotency:
+  coverage: none
   supported: unknown
   documented: false
   note: >-

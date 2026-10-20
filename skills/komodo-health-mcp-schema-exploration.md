@@ -1,5 +1,5 @@
 ---
-name: Explore Komodo data from an AI client over MCP
+name: komodo-health-mcp-schema-exploration
 description: >-
   Wire the first-party Komodo MCP server into an AI client and use its
   list_snowflake tool to discover databases, schemas, tables, and columns before

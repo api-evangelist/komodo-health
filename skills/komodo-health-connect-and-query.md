@@ -1,5 +1,5 @@
 ---
-name: Connect to Komodo and run a query
+name: komodo-health-connect-and-query
 description: >-
   Authenticate to the Komodo Health platform with the Marmot Development Kit and
   run SQL against the account's Komodo-managed Snowflake warehouse, including

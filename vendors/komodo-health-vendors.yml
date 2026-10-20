@@ -1,0 +1,74 @@
+generated: '2026-10-20'
+method: probed
+source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
+registry: all/0-working/vendors.yml
+areas_vocabulary:
+- documentation
+- developer-portal
+- api-gateway
+- cdn
+- hosting
+- sdk-generation
+- api-collections
+- status-page
+- support
+- community
+- identity
+- mcp-hosting
+vendors:
+- vendor: cloudflare
+  name: Cloudflare
+  area: cdn
+  host: www.komodohealth.com
+  evidence: header:cf-ray
+  signal: header
+  confidence: high
+  kin_score:
+  - https_enforced
+  - hsts
+- vendor: cloudfront
+  name: Amazon CloudFront
+  area: cdn
+  host: docs.komodohealth.com
+  evidence: header:x-amz-cf-id
+  signal: header
+  confidence: high
+  kin_score: []
+- vendor: wpengine
+  name: WP Engine
+  area: hosting
+  host: www.komodohealth.com
+  evidence: header:x-powered-by:wp engine
+  signal: header
+  confidence: high
+  kin_score: []
+- vendor: auth0
+  name: Auth0 (Okta)
+  area: identity
+  host: auth.komodohealth.com
+  evidence: komodo-health-oauth-authorization-server.json names auth0 in its OAuth metadata
+  signal: oauth-metadata
+  confidence: high
+  kin_score:
+  - authentication
+reliance:
+  areas_vendor_served:
+  - cdn
+  - hosting
+  - identity
+  vendor_count: 4
+  areas_observed: 12
+  share_of_observable_areas: 0.25
+  note: areas where a third party was DETECTED serving this provider; an area absent here was either self-run or not observed, and this script
+    cannot tell those apart
+checked:
+- 'docs-platform: custom'
+- www.komodohealth.com (Website)
+- docs.komodohealth.com (DeveloperPortal)
+- docs.komodohealth.com (Documentation)
+- docs.komodohealth.com (APIReference)
+- docs.komodohealth.com (GettingStarted)
+- komodohealthsupport.zendesk.com (Support)
+- www.komodohealth.com (SignUp)
+- statuspage.komodohealth.com (StatusPage)
+- api.komodohealth.com (baseURL)
