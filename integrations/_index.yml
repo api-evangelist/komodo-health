@@ -15,3 +15,30 @@
   relationship: distribution-channel
   status: not-a-workflow
   arazzo: null
+- slug: komodo-health-databricks-marketplace
+  label: Databricks Marketplace
+  partner: databricks
+  partner_name: Databricks Marketplace
+  category: data product listing
+  type: marketplace
+  marketplace: databricks-marketplace
+  channel: distribution
+  evidence: https://marketplace.databricks.com/provider/f77cbe35-afdb-4ddc-a9d7-dec83fe53c33
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: Databricks Marketplace (marketplace.databricks.com/api/2.0/public-marketplace-providers + public-marketplace-listings)
+    spec_file: null
+    role: data-marketplace-seller
+    registered_name: Komodo Health
+    matched_domain: komodohealth.com
+    matched_by: domain
+    listings: 2
+    sample_listings:
+    - Healthcare Map via Delta Sharing
+    - MapLab Enterprise
+    signal_note: 'participation: the provider lists data products on this marketplace; counts are context'
+    detected_by: sweep-data-marketplaces.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null

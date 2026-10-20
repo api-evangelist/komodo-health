@@ -11,6 +11,7 @@ checked:
 - https://monid.ai/tools/komodo-health
 - https://n8n.io/integrations/komodo-health/
 - https://zapier.com/apps/komodo-health/integrations
+- https://marketplace.databricks.com/
 summary: null
 marketplace_apps: []
 edges:
@@ -30,4 +31,30 @@ edges:
   seller_name: Komodo Health
   detected_by: sweep-cloud-marketplaces.py
   detected: '2026-10-13'
+- partner_name: Databricks Marketplace
+  partner: databricks
+  partner_match: aggregator
+  type: marketplace
+  marketplace: databricks-marketplace
+  channel: distribution
+  relationship: distribution-channel
+  direction: third-party
+  evidence: https://marketplace.databricks.com/provider/f77cbe35-afdb-4ddc-a9d7-dec83fe53c33
+  category: data product listing
+  contract_reference:
+    register: Databricks Marketplace (marketplace.databricks.com/api/2.0/public-marketplace-providers + public-marketplace-listings)
+    spec_file: null
+    role: data-marketplace-seller
+    registered_name: Komodo Health
+    matched_domain: komodohealth.com
+    matched_by: domain
+    listings: 2
+    sample_listings:
+    - Healthcare Map via Delta Sharing
+    - MapLab Enterprise
+    signal_note: 'participation: the provider lists data products on this marketplace; counts are context'
+    detected_by: sweep-data-marketplaces.py
+    detected: '2026-10-20'
+  detected_by: sweep-data-marketplaces.py
+  detected: '2026-10-20'
 templates: []
