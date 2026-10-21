@@ -12,6 +12,12 @@ checked:
 - https://n8n.io/integrations/komodo-health/
 - https://zapier.com/apps/komodo-health/integrations
 - https://marketplace.databricks.com/
+- https://a16z.com/portfolio/
+- https://www.battery.com/company/
+- https://www.battery.com/wp-admin/admin-ajax.php
+- https://www.indexventures.com/companies/
+- https://www.sequoiacap.com/our-companies/
+- https://www.sequoiacap.com/sitemap.xml
 summary: null
 marketplace_apps: []
 edges:
@@ -57,4 +63,33 @@ edges:
     detected: '2026-10-20'
   detected_by: sweep-data-marketplaces.py
   detected: '2026-10-20'
+- partner_name: Andreessen Horowitz (a16z)
+  partner: a16z
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://a16z.com/companies/komodo-health/
+  category: vc portfolio participation
+  contract_reference:
+    register: a16z portfolio (a16z.com/portfolio/, the page's own data-companies JSON)
+    standard: null
+    spec_file: null
+    role: vc-portfolio-company
+    registered_name: Komodo Health
+    register_id: https://a16z.com/companies/komodo-health/
+    register_country: null
+    register_website: https://komodohealth.com
+    matched_domain: komodohealth.com
+    matched_by: domain
+    signal_note: 'participation only: the venture firm''s own published portfolio lists the company (investment);
+      an ownership and participation record, not conformance or certification'
+    detected_by: sweep-vc-portfolios.py
+    detected: '2026-10-21'
+    year: '2019'
+    status: Active
+    sector: Bio + Health;Cultural Leadership Fund;Growth
+  detected_by: sweep-vc-portfolios.py
+  first_seen: '2026-10-21'
 templates: []
