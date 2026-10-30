@@ -64,38 +64,121 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Komodo Health combines a de-identified real-world data foundation — the Healthcare
-Map, over one trillion linked records covering 330M+ patients — with a healthcare
-AI layer called Marmot, serving life sciences, payers, providers and consultancies.
+Komodo Health is a healthcare technology company that combines a de-identified real-world data foundation — the Healthcare Map, over one trillion linked records covering 330M+ patients and refreshed daily — with a validated healthcare AI layer called Marmot, serving life sciences, payers, providers, financial services and consultancies. Its developer surface is the Marmot Development Kit: a first-party Python SDK and `komodo` CLI distributed on PyPI that authenticate with OAuth 2.0 (device flow for users, service-principal client credentials for machines) and broker access to a dedicated, per-account Komodo-managed Snowflake warehouse. The same package ships a first-party Model Context Protocol server that lets AI assistants explore warehouse schemas and drive the Komodo App Builder, a Marmot Analysis API reachable from `client.marmot` and `komodo marmot -c`, and a beta Cohort API for interactive patient-cohort exploration over ICD-10, CPT/HCPCS and NDC codes. Authentication runs against Komodo's own OpenID Connect authorization server at auth.komodohealth.com, which publishes anonymous OIDC and RFC 8414 discovery documents.
 
-Its developer surface is the **Marmot Development Kit**: the first-party `komodo`
-package on PyPI, which ships a Python SDK, the `komodo` CLI, and a first-party
-**Model Context Protocol server**. Authentication is OAuth 2.0 — device flow for
-users, service-principal client credentials for machines — and the SDK brokers
-access to a dedicated, per-account Komodo-managed Snowflake warehouse. Komodo does
-not publish a public OpenAPI document; the REST control plane is auth-gated.
+**Areas:** Company · Healthcare · Health Data · Life Sciences · Real-World Data · Healthcare Analytics · Artificial Intelligence · Data · Snowflake · MCP
 
-- Website — https://www.komodohealth.com/
-- Developer docs — https://docs.komodohealth.com/
-- Package — https://pypi.org/project/komodo/
-- Trust center — https://trust.komodohealth.com/
+## Komodo Health on APIs.io
 
-Backed by: a16z, iconiq-capital
+Everything profiled for Komodo Health is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/komodo-health/](https://apis.io/providers/komodo-health/)** — or go straight to one of the APIs or properties below.
 
-## Artifacts
+### APIs (1)
 
-| Path | Type |
+- [Komodo Health Marmot Development Kit](https://apis.io/apis/komodo-health/komodo-health-marmot-development-kit/) — The Marmot Development Kit is Komodo Health's developer surface — a Python SDK and `komodo` CLI published to PyPI that handle OAuth 2.0 authentication,…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [komodo](https://apis.io/servers/komodo-health/komodo/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Komodo Health Authentication](https://apis.io/security/komodo-health/komodo-health-authentication/)
+- [Komodo Health Domain Security](https://apis.io/security/komodo-health/komodo-health-domain-security/)
+- [Komodo Health Trust Center](https://apis.io/security/komodo-health/komodo-health-trust-center/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Komodo Health Scopes](https://apis.io/scopes/komodo-health/komodo-health-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Komodo Health Plans Pricing](https://apis.io/plans/komodo-health/komodo-health-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Komodo Health Rate Limits](https://apis.io/rate-limits/komodo-health/komodo-health-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://www.komodohealth.com/)
+- [Documentation](https://docs.komodohealth.com/)
+- [Getting started](https://docs.komodohealth.com/guides-tutorials/guides/1-quickstart/)
+- [API reference](https://docs.komodohealth.com/reference/sdk/)
+- [Sign up](https://www.komodohealth.com/get-demo/)
+- [Support](https://komodohealthsupport.zendesk.com/hc/en-us)
+- [Changelog](https://docs.komodohealth.com/reference/changelog/)
+- [Blog](https://www.komodohealth.com/perspectives/)
+- [Compliance](https://trust.komodohealth.com/)
+- [Terms of service](https://www.komodohealth.com/terms-of-service/)
+- [Privacy policy](https://www.komodohealth.com/privacy-notice/)
+- [GitHub](https://github.com/komodohealth)
+- [Status](https://statuspage.komodohealth.com/)
+
+## API Evangelist rating
+
+**Kin Score 39.4** — developing · rubric 0.24.0 · scored 2026-10-20
+
+| Facet | Score |
 |---|---|
-| `packages/` | Packages / SDKs — the `komodo` PyPI distribution |
-| `cli/` | CLI — full `komodo` command surface incl. App Builder |
-| `mcp/` | MCPServer — stdio server, `list_snowflake` + 26 App Builder tools |
-| `authentication/` | Authentication — OAuth 2.0 device flow + service principals |
-| `conventions/` | Conventions — tenancy, async, tracing, diagnostics |
-| `errors/` | ErrorCatalog — SDK exceptions + documented failure modes |
-| `lifecycle/` | Lifecycle — semver, beta tier, status page, support |
-| `changelog/` | ChangeLog — published PyPI versions + notable changes |
-| `conformance/` | Conformance — OAuth 2.0, MCP, SOC 2, CMS QE, ICD-10/CPT/NDC |
-| `security/` | TrustCenter + DomainSecurity |
-| `well-known/` | WellKnown — probe results (none published) |
-| `llms/` | LLMsTxt — verbatim from komodohealth.com/llms.txt |
-| `skills/` | AgentSkill — three packaged flows |
+| Discoverability | 73.3 |
+| Contract quality | 0.0 |
+| Contract governance | 18.2 |
+| Operational transparency | 34.2 |
+| Developer ergonomics | 70.8 |
+| Access clarity | 42.1 |
+
+**Agent readiness 12.3** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | — |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 30.9** — Health
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/komodo-health/](https://apis.io/providers/komodo-health/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Komodo Health: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/komodo-health/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
